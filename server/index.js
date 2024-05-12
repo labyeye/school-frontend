@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 
 // CORS configuration
 const corsOptions = {
-    origin: 'https://school-frontend-wheat.vercel.app', // Allow requests from frontend
+  origin: 'https://school-frontend-wheat.vercel.app', // Update with your frontend URL
 };
 app.use(cors(corsOptions));
 

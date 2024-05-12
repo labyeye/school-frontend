@@ -33,7 +33,7 @@ function Parents() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-          const response = await fetch('https://school-backend-xren.onrender.com/addparentemail', {
+          const response = await fetch('http://localhost:3001/addparentemail', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
