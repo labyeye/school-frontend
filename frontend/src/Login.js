@@ -26,7 +26,7 @@ const Login = () => {
             password: password
         };
 
-        fetch('http://localhost:3001/signin', {
+        fetch('https://school-frontend-98qa.vercel.app/signin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
