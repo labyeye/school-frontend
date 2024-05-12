@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 
 // CORS configuration
 const corsOptions = {
-    origin: 'http://localhost:3000', // Allow requests from frontend
+    origin: 'https://school-frontend-wheat.vercel.app/', // Allow requests from frontend
 };
 app.use(cors(corsOptions));
 
