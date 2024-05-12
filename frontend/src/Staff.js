@@ -87,7 +87,7 @@ const notification_pending_approval_length = notifications.filter(notification =
 
   const handleGetNotifications = async () => {
     try {
-      fetch('https://school-frontend-98qa.vercel.app/getnotifications')
+      fetch('https://school-backend-xren.onrender.com/getnotifications')
         .then(response => response.json())
         .then(data => setNotifications(data))
         .catch(error => console.error('Error fetching notifications:', error));
@@ -108,7 +108,7 @@ const notification_pending_approval_length = notifications.filter(notification =
 
       const handleSubmit = async () => {
         try {
-          const response = await fetch('https://school-frontend-98qa.vercel.app/addnotification', {
+          const response = await fetch('https://school-backend-xren.onrender.com/addnotification', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

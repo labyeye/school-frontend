@@ -33,7 +33,7 @@ function Parents() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-          const response = await fetch('https://school-frontend-98qa.vercel.app/addparentemail', {
+          const response = await fetch('https://school-backend-xren.onrender.com/addparentemail', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

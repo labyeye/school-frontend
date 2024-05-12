@@ -69,7 +69,7 @@ function SidebarMenu() {
   };
   const handleGetNotifications = async () => {
     try {
-      const response = await fetch('https://school-frontend-98qa.vercel.app/getnotifications');
+      const response = await fetch('https://school-backend-xren.onrender.com/getnotifications');
       if (response.ok) {
         const data = await response.json();
         setNotifications(data);
@@ -106,7 +106,7 @@ function SidebarMenu() {
     }
 
     try {
-      const response = await fetch(`https://school-frontend-98qa.vercel.app/updatenotification/${notification.id}`, {
+      const response = await fetch(`https://school-backend-xren.onrender.com/updatenotification/${notification.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ function SidebarMenu() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('https://school-frontend-98qa.vercel.app/createuser', {
+      const response = await fetch('https://school-backend-xren.onrender.com/createuser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -159,7 +159,7 @@ function SidebarMenu() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('https://school-frontend-98qa.vercel.app/users');
+      const response = await fetch('https://school-backend-xren.onrender.com/users');
       if (response.ok) {
         const data = await response.json();
         setUsers(data);
