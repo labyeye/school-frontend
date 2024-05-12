@@ -26,7 +26,7 @@ const Login = () => {
             password: password
         };
 
-        fetch('https://school-frontend-98qa.vercel.app/signin', {
+        fetch('https://school-backend-xren.onrender.com/signin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
