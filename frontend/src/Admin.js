@@ -63,7 +63,7 @@ function SidebarMenu() {
         tomail: parentEmail
       };
   
-      emailjs.send('service_7y6eu4l', 'template_hy4zaa6', templateParams, '3XyzWvUrjvRULOnrF')
+      emailjs.send('service_o0zvik4', 'template_rgo8jsb', templateParams, 'crc_OthtMutwA5FNS')
         .then((response) => {
           console.log(`Email sent to ${parentEmail}:`, response);
         })
