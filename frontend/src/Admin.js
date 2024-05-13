@@ -53,7 +53,17 @@ function SidebarMenu() {
   useEffect(() => {
     handleGetNotifications();
     fetchUsers();
+    // Load selected statuses from localStorage when component mounts
+    const savedSelectedStatus = localStorage.getItem('selectedStatus');
+    if (savedSelectedStatus) {
+      setSelectedStatuses(JSON.parse(savedSelectedStatus));
+    }
   }, []);
+
+  // Save selected statuses to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('selectedStatus', JSON.stringify(selectedStatus));
+  }, [selectedStatus]);
 
   const sendEmailToParents = (title, message, parentEmail) => {
     parentEmail.forEach(parentEmail => {
@@ -124,7 +134,7 @@ function SidebarMenu() {
       if (!response.ok) {
         throw new Error('Failed to update notification status');
       }
-      window.reload();
+      // window.reload(); // This should be window.location.reload()
     } catch (error) {
       console.error('Error updating notification status:', error);
     }
