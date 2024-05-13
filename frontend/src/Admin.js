@@ -84,10 +84,10 @@ function SidebarMenu() {
     if (savedSelectedStatus) {
       setSelectedStatuses(JSON.parse(savedSelectedStatus));
     } else {
-      // Initialize selectedStatus with default values (pending) if no statuses are saved in localStorage
+      
       const defaultStatuses = {};
       notifications.forEach((notification) => {
-        defaultStatuses[notification.id] = "p"; // 'p' for pending
+        defaultStatuses[notification.id] = "p"; 
       });
       setSelectedStatuses(defaultStatuses);
     }
@@ -151,36 +151,30 @@ function SidebarMenu() {
 
   const handleChange = async (event, notification) => {
     const newStatus = event.target.value;
-
-    // Update selectedStatus state
-    setSelectedStatuses((prevState) => ({
+  
+    // Update selectedStatus state immediately
+    setSelectedStatuses(prevState => ({
       ...prevState,
-      [notification.id]: newStatus,
+      [notification.id]: newStatus
     }));
-
-    if (newStatus === "a") {
-      sendEmailToParents(notification.title, notification.message, parentEmail);
-    }
-
+  
+    // Update status in the database
     try {
-      const response = await fetch(
-        `https://school-frontend-98qa.vercel.app/updatenotification/${notification.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ tick: newStatus }),
-        }
-      );
+      const response = await fetch(`https://school-frontend-98qa.vercel.app/updatenotification/${notification.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tick: newStatus }),
+      });
       if (!response.ok) {
-        throw new Error("Failed to update notification status");
+        throw new Error('Failed to update notification status');
       }
-      // Do not reload the page here
     } catch (error) {
-      console.error("Error updating notification status:", error);
+      console.error('Error updating notification status:', error);
     }
   };
+  
 
   const renderRowColor = (index) => {
     return index % 2 === 0 ? "white" : "#f2f2f2";
