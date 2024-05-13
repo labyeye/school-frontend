@@ -51,14 +51,18 @@ function SidebarMenu() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
-    handleGetNotifications();
-    fetchUsers();
-    // Load selected statuses from localStorage when component mounts
-    const savedSelectedStatus = localStorage.getItem('selectedStatus');
-    if (savedSelectedStatus) {
-      setSelectedStatuses(JSON.parse(savedSelectedStatus));
-    }
-  }, []);
+    // Set default status to "p" (pending) for each notification if it's not already set
+    const defaultStatuses = {};
+    notifications.forEach(notification => {
+      if (!selectedStatus[notification.id]) {
+        defaultStatuses[notification.id] = 'p'; // 'p' for pending
+      }
+    });
+    setSelectedStatuses(prevState => ({
+      ...prevState,
+      ...defaultStatuses
+    }));
+  }, [notifications]);
 
   // Save selected statuses to localStorage whenever it changes
   useEffect(() => {
