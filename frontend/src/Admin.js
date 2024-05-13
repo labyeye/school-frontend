@@ -151,6 +151,8 @@ function SidebarMenu() {
 
   const handleChange = async (event, notification) => {
     const newStatus = event.target.value;
+
+    // Update selectedStatus state
     setSelectedStatuses((prevState) => ({
       ...prevState,
       [notification.id]: newStatus,
@@ -174,7 +176,7 @@ function SidebarMenu() {
       if (!response.ok) {
         throw new Error("Failed to update notification status");
       }
-      // window.reload(); // This should be window.location.reload()
+      // Do not reload the page here
     } catch (error) {
       console.error("Error updating notification status:", error);
     }
@@ -434,7 +436,7 @@ function SidebarMenu() {
                       >
                         <TableCell>
                           <Select
-                            value={selectedStatus[notification.id] || "p"} // Ensure that 'p' (pending) is selected by default
+                            value={selectedStatus[notification.id] || "p"}
                             onChange={(event) =>
                               handleChange(event, notification)
                             }
