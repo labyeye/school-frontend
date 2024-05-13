@@ -63,7 +63,7 @@ function SidebarMenu() {
         tomail: parentEmail
       };
   
-      emailjs.send('service_o0zvik4', 'template_rgo8jsb', templateParams, 'crc_OthtMutwA5FNS')
+      emailjs.send('service_7y6eu4l', 'template_hy4zaa6', templateParams, '3XyzWvUrjvRULOnrF')
         .then((response) => {
           console.log(`Email sent to ${parentEmail}:`, response);
         })
@@ -102,7 +102,33 @@ function SidebarMenu() {
   };
 
 
-  
+  const handleChange = async (event, notification) => {
+    const newStatus = event.target.value;
+    setSelectedStatuses(prevState => ({
+      ...prevState,
+      [notification.id]: newStatus
+    }));
+
+    if (newStatus === 'a') {
+      sendEmailToParents(notification.title, notification.message, parentEmail);
+    }
+
+    try {
+      const response = await fetch(`https://school-frontend-98qa.vercel.app/updatenotification/${notification.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tick: newStatus }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update notification status');
+      }
+      window.reload();
+    } catch (error) {
+      console.error('Error updating notification status:', error);
+    }
+  };
 
 
   const renderRowColor = (index) => {
@@ -308,7 +334,7 @@ function SidebarMenu() {
                       <TableRow key={notification.id} style={{ backgroundColor: renderRowColor(index) }}>
                         <TableCell>
                           <Select
-                            value={selectedStatus[notification.id] || 'p'}
+                            value={selectedStatus[notification.id] || ''}
                             onChange={(event) => handleChange(event, notification)}
                             style={{ color: selectedStatus[notification.id] === 'p' ? 'grey' : selectedStatus[notification.id] === 'r' ? 'red' : 'green' }}
                           >
