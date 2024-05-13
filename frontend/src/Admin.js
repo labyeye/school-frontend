@@ -308,7 +308,7 @@ function SidebarMenu() {
                       <TableRow key={notification.id} style={{ backgroundColor: renderRowColor(index) }}>
                         <TableCell>
                           <Select
-                            value={selectedStatus[notification.id] || ''}
+                            value={selectedStatus[notification.id] || 'p'}
                             onChange={(event) => handleChange(event, notification)}
                             style={{ color: selectedStatus[notification.id] === 'p' ? 'grey' : selectedStatus[notification.id] === 'r' ? 'red' : 'green' }}
                           >
