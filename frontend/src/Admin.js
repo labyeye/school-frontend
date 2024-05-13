@@ -154,10 +154,11 @@ function SidebarMenu() {
       if (response.ok) {
         const data = await response.json();
         console.log('User created successfully:', data);
+        window.reload();
       } else {
         console.error('Failed to create user:', response.statusText);
       }
-      window.reload();
+      
     } catch (error) {
       console.error('Error creating user:', error);
     }
