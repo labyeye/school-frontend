@@ -51,23 +51,21 @@ function SidebarMenu() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
-    // Set default status to "p" (pending) for each notification if it's not already set
-    const defaultStatuses = {};
-    notifications.forEach(notification => {
-      if (!selectedStatus[notification.id]) {
+    handleGetNotifications();
+    fetchUsers();
+    // Load selected statuses from localStorage when component mounts
+    const savedSelectedStatus = localStorage.getItem('selectedStatus');
+    if (savedSelectedStatus) {
+      setSelectedStatuses(JSON.parse(savedSelectedStatus));
+    } else {
+      // Initialize selectedStatus with default values (pending) if no statuses are saved in localStorage
+      const defaultStatuses = {};
+      notifications.forEach(notification => {
         defaultStatuses[notification.id] = 'p'; // 'p' for pending
-      }
-    });
-    setSelectedStatuses(prevState => ({
-      ...prevState,
-      ...defaultStatuses
-    }));
-  }, [notifications]);
-
-  // Save selected statuses to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('selectedStatus', JSON.stringify(selectedStatus));
-  }, [selectedStatus]);
+      });
+      setSelectedStatuses(defaultStatuses);
+    }
+  }, []);
 
   const sendEmailToParents = (title, message, parentEmail) => {
     parentEmail.forEach(parentEmail => {
