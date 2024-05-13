@@ -101,6 +101,7 @@ function SidebarMenu() {
     }
   };
 
+
   const handleChange = async (event, notification) => {
     const newStatus = event.target.value;
     setSelectedStatuses(prevState => ({
@@ -123,10 +124,12 @@ function SidebarMenu() {
       if (!response.ok) {
         throw new Error('Failed to update notification status');
       }
+      window.reload();
     } catch (error) {
       console.error('Error updating notification status:', error);
     }
   };
+
 
   const renderRowColor = (index) => {
     return index % 2 === 0 ? 'white' : '#f2f2f2';
@@ -154,6 +157,7 @@ function SidebarMenu() {
       } else {
         console.error('Failed to create user:', response.statusText);
       }
+      window.reload();
     } catch (error) {
       console.error('Error creating user:', error);
     }
@@ -231,6 +235,22 @@ function SidebarMenu() {
             </ListItemIcon>
             <StyledListItemText primary="Settings" />
           </ListItem>
+
+          <StyledDivider />
+          <ListItem button component={Link} onClick={() => {
+            // Clear local storage values
+            localStorage.removeItem('userType');
+            localStorage.removeItem('name');
+            localStorage.removeItem('email');
+
+            // Redirect to root route
+            window.location.href = '/';
+          }}>
+            <ListItemIcon>
+              <InboxIcon style={{ color: 'red' }} />
+            </ListItemIcon>
+            <StyledListItemText style={{ color: 'red' }} primary="Logout" />
+          </ListItem>
         </List>
       </StyledDrawer>
 
@@ -240,7 +260,7 @@ function SidebarMenu() {
             <h2>👋 Welcome</h2>
             <p style={{ color: 'grey', fontSize: '20px' }}>Overview</p>
             <Grid container spacing={2} >
-              {/* Cards */}
+              
               <Grid item xs={12} sm={3} >
                 <Card variant="outlined" sx={{ backgroundColor: '#2196F3' }} style={{ borderRadius: '12px' }}>
                   <CardContent>
@@ -290,6 +310,48 @@ function SidebarMenu() {
                 </Card>
               </Grid>
             </Grid>
+          </div>
+        )}
+
+{selectedSection === 'inbox' && (
+          <div>
+            <div>
+              <h2>Inbox</h2>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow style={{ backgroundColor: 'black', color: 'white' }}>
+                      <TableCell style={{ color: 'white' }}>Status</TableCell>
+                      <TableCell style={{ color: 'white' }}>Title</TableCell>
+                      <TableCell style={{ color: 'white' }}>Name</TableCell>
+                      <TableCell style={{ color: 'white' }}>Message</TableCell>
+                      <TableCell style={{ color: 'white' }}>ID</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {notifications.map((notification, index) => (
+                      <TableRow key={notification.id} style={{ backgroundColor: renderRowColor(index) }}>
+                        <TableCell>
+                          <Select
+                            value={selectedStatus[notification.id] || ''}
+                            onChange={(event) => handleChange(event, notification)}
+                            style={{ color: selectedStatus[notification.id] === 'p' ? 'grey' : selectedStatus[notification.id] === 'r' ? 'red' : 'green' }}
+                          >
+                            <MenuItem value="p">Pending</MenuItem>
+                            <MenuItem value="a">Approve</MenuItem>
+                            <MenuItem value="r">Reject</MenuItem>
+                          </Select>
+                        </TableCell>
+                        <TableCell>{notification.title}</TableCell>
+                        <TableCell>{notification.name}</TableCell>
+                        <TableCell>{notification.message}</TableCell>
+                        <TableCell>{notification.id}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
           </div>
         )}
 

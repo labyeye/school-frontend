@@ -103,6 +103,7 @@ function Staff() {
         console.log('Notification added successfully:', data);
         handleGetNotifications();
         setIsNewNotificationDrawerOpen(false);
+        window.reload();
       } else {
         console.error('Failed to add notification:', response.statusText);
       }
@@ -137,8 +138,9 @@ function Staff() {
       <StyledDrawer variant="temporary" anchor="left" open={isSidebarDrawerOpen} onClose={toggleSidebarDrawer}>
         <List>
           {/* Sidebar Menu Items */}
-          <ListItem button component={Link} onClick={() => { setSelectedSection('dashboard')
-                setIsSidebarDrawerOpen(!isSidebarDrawerOpen);
+          <ListItem button component={Link} onClick={() => {
+            setSelectedSection('dashboard')
+            setIsSidebarDrawerOpen(!isSidebarDrawerOpen);
           }}>
             <ListItemIcon>
               <DashboardIcon style={{ color: '#fff' }} />
@@ -147,8 +149,9 @@ function Staff() {
           </ListItem>
 
           <StyledDivider />
-          <ListItem button component={Link} onClick={() =>{ setSelectedSection('inbox')
-                setIsSidebarDrawerOpen(!isSidebarDrawerOpen);
+          <ListItem button component={Link} onClick={() => {
+            setSelectedSection('inbox')
+            setIsSidebarDrawerOpen(!isSidebarDrawerOpen);
 
           }}>
             <ListItemIcon>
@@ -158,8 +161,9 @@ function Staff() {
           </ListItem>
 
           <StyledDivider />
-          <ListItem button component={Link} onClick={() => { setSelectedSection('settings')
-                setIsSidebarDrawerOpen(!isSidebarDrawerOpen);
+          <ListItem button component={Link} onClick={() => {
+            setSelectedSection('settings')
+            setIsSidebarDrawerOpen(!isSidebarDrawerOpen);
 
           }}>
             <ListItemIcon>
@@ -167,6 +171,23 @@ function Staff() {
             </ListItemIcon>
             <StyledListItemText primary="Settings" />
           </ListItem>
+
+          <StyledDivider />
+          <ListItem button component={Link} onClick={() => {
+            // Clear local storage values
+            localStorage.removeItem('userType');
+            localStorage.removeItem('name');
+            localStorage.removeItem('email');
+
+            // Redirect to root route
+            window.location.href = '/';
+          }}>
+            <ListItemIcon>
+              <InboxIcon style={{ color: 'red' }} />
+            </ListItemIcon>
+            <StyledListItemText style={{ color: 'red' }} primary="Logout" />
+          </ListItem>
+
         </List>
       </StyledDrawer>
 
