@@ -5,12 +5,15 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Link } from 'react-router-dom';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
-import { Select, MenuItem, Typography, TextField, Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, Button, IconButton, Card, CardContent, Grid, FormControl, InputLabel } from '@mui/material';
+import { Select, MenuItem, Typography, TextField, Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, Button, Card, CardContent, Grid, FormControl, InputLabel, IconButton } from '@mui/material';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
-import emailjs from 'emailjs-com'; // Import EmailJS library
+import emailjs from 'emailjs-com';
 import parentsData from './parents.json';
+
+import MenuIcon from '@mui/icons-material/Menu';
+
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   width: 240,
   flexShrink: 0,
@@ -21,6 +24,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     margin: '10px',
     borderRadius: '20px',
     padding: '10px',
+    position: 'fixed', // Add this line to fix the position of the drawer
   },
 }));
 
@@ -34,9 +38,6 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
 
 function SidebarMenu() {
   const parentEmail = parentsData.parents;
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [userType, setUserType] = useState('');
   const [selectedSection, setSelectedSection] = useState('dashboard');
   const [notifications, setNotifications] = useState([]);
   const [selectedStatus, setSelectedStatuses] = useState({});
@@ -46,10 +47,14 @@ function SidebarMenu() {
   const [newemail, setnewEmail] = useState('');
   const [newpassword, setnewPassword] = useState('');
   const [newtype, setnewType] = useState('staff');
+  const [users, setUsers] = useState([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
     handleGetNotifications();
+    fetchUsers();
   }, []);
+
   const sendEmailToParents = (title, message, parentEmail) => {
     parentEmail.forEach(parentEmail => {
       const templateParams = {
@@ -67,6 +72,7 @@ function SidebarMenu() {
         });
     });
   };
+
   const handleGetNotifications = async () => {
     try {
       const response = await fetch('https://school-frontend-98qa.vercel.app/getnotifications');
@@ -79,20 +85,21 @@ function SidebarMenu() {
     } catch (error) {
       console.error('Error fetching notifications:', error);
     }
-  }
-  const currentUser = localStorage.getItem('name');
+  };
 
-  const notification_length = notifications.length;
-  const notification_approved_length = notifications.filter(notification => {
-    return notification.tick === 'a' && notification.name === currentUser;
-  }).length;
-  const notification_not_approved_length = notifications.filter(notification => {
-    return notification.tick === 'r' && notification.name === currentUser;
-  }).length;
-  const notification_pending_approval_length = notifications.filter(notification => {
-    return notification.tick === 'p' && notification.name === currentUser;
-  }).length;
-
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('https://school-frontend-98qa.vercel.app/users');
+      if (response.ok) {
+        const data = await response.json();
+        setUsers(data);
+      } else {
+        console.error('Failed to fetch users:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
   const handleChange = async (event, notification) => {
     const newStatus = event.target.value;
@@ -120,11 +127,11 @@ function SidebarMenu() {
       console.error('Error updating notification status:', error);
     }
   };
-  
 
   const renderRowColor = (index) => {
     return index % 2 === 0 ? 'white' : '#f2f2f2';
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -151,33 +158,31 @@ function SidebarMenu() {
       console.error('Error creating user:', error);
     }
   };
-  const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch('https://school-frontend-98qa.vercel.app/users');
-      if (response.ok) {
-        const data = await response.json();
-        setUsers(data);
-      } else {
-        console.error('Failed to fetch users:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    }
-  };
   return (
-    <div style={{ display: 'flex' }}>
-      <StyledDrawer variant="permanent" anchor="left">
+    <div>
+      <div style={{ display: 'flex' }}>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={() => setIsDrawerOpen(!isDrawerOpen)}
+          edge="start"
+        >
+          {isDrawerOpen ? <CloseIcon /> : <MenuIcon />}
+        </IconButton>
+        <Typography variant="h6" noWrap style={{marginTop:'6px'}}>
+          Admin Dashboard
+        </Typography>
+      </div>
+      <StyledDrawer variant="temporary" anchor="left" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} >
         <List>
           <ListItem
             button
             component={Link}
-            onClick={() => setSelectedSection('dashboard')}
+            onClick={() => {
+              setSelectedSection('dashboard');
+              setIsDrawerOpen(!isDrawerOpen);
+            }}
           >
             <ListItemIcon>
               <DashboardIcon style={{ color: '#fff' }} />
@@ -189,7 +194,9 @@ function SidebarMenu() {
           <ListItem
             button
             component={Link}
-            onClick={() => setSelectedSection('inbox')}
+            onClick={() => { setSelectedSection('inbox')
+            setIsDrawerOpen(!isDrawerOpen);
+            }}
           >
             <ListItemIcon>
               <InboxIcon style={{ color: '#fff' }} />
@@ -200,7 +207,9 @@ function SidebarMenu() {
           <ListItem
             button
             component={Link}
-            onClick={() => setSelectedSection('add')}
+            onClick={() => { setSelectedSection('add')
+            setIsDrawerOpen(!isDrawerOpen);
+            }}
           >
             <ListItemIcon>
               <GroupAddOutlinedIcon style={{ color: '#fff' }} />
@@ -212,7 +221,10 @@ function SidebarMenu() {
           <ListItem
             button
             component={Link}
-            onClick={() => setSelectedSection('settings')}
+            onClick={() => { setSelectedSection('settings')
+            setIsDrawerOpen(!isDrawerOpen);
+          }
+            }
           >
             <ListItemIcon>
               <SettingsIcon style={{ color: '#fff' }} />
@@ -222,12 +234,13 @@ function SidebarMenu() {
         </List>
       </StyledDrawer>
 
-      <div style={{ flex: 1, marginLeft: '150px', marginTop: '50px', marginRight: '20px' }}>
-        {selectedSection === 'dashboard' && (
+      <div style={{ marginLeft: isDrawerOpen ? '20px' : '0', marginTop: '50px', marginRight: '20px' }}>
+      {selectedSection === 'dashboard' && (
           <div>
-            <h2>👋 Welcome {name}</h2>
+            <h2>👋 Welcome</h2>
             <p style={{ color: 'grey', fontSize: '20px' }}>Overview</p>
             <Grid container spacing={2} >
+              {/* Cards */}
               <Grid item xs={12} sm={3} >
                 <Card variant="outlined" sx={{ backgroundColor: '#2196F3' }} style={{ borderRadius: '12px' }}>
                   <CardContent>
@@ -235,7 +248,7 @@ function SidebarMenu() {
                       Total Notifications
                     </Typography>
                     <Typography variant="h4" color="white">
-                      {notification_length}
+                      {notifications.length}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -247,7 +260,7 @@ function SidebarMenu() {
                       Total Approvals
                     </Typography>
                     <Typography variant="h4" color="white">
-                      {notification_approved_length}
+                      {notifications.filter(notification => notification.tick === 'a').length}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -259,7 +272,7 @@ function SidebarMenu() {
                       Total Rejections
                     </Typography>
                     <Typography variant="h4" color="white">
-                      {notification_not_approved_length}
+                      {notifications.filter(notification => notification.tick === 'r').length}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -271,7 +284,7 @@ function SidebarMenu() {
                       Pending Approval
                     </Typography>
                     <Typography variant="h4" color="white">
-                      {notification_pending_approval_length}
+                      {notifications.filter(notification => notification.tick === 'p').length}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -280,47 +293,6 @@ function SidebarMenu() {
           </div>
         )}
 
-        {selectedSection === 'inbox' && (
-          <div>
-            <div>
-              <h2>Inbox</h2>
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow style={{ backgroundColor: 'black', color: 'white' }}>
-                      <TableCell style={{ color: 'white' }}>Status</TableCell>
-                      <TableCell style={{ color: 'white' }}>Title</TableCell>
-                      <TableCell style={{ color: 'white' }}>Name</TableCell>
-                      <TableCell style={{ color: 'white' }}>Message</TableCell>
-                      <TableCell style={{ color: 'white' }}>ID</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {notifications.map((notification, index) => (
-                      <TableRow key={notification.id} style={{ backgroundColor: renderRowColor(index) }}>
-                        <TableCell>
-                          <Select
-                            value={selectedStatus[notification.id] || ''}
-                            onChange={(event) => handleChange(event, notification)}
-                            style={{ color: selectedStatus[notification.id] === 'p' ? 'grey' : selectedStatus[notification.id] === 'r' ? 'red' : 'green' }}
-                          >
-                            <MenuItem value="p">Pending</MenuItem>
-                            <MenuItem value="a">Approve</MenuItem>
-                            <MenuItem value="r">Reject</MenuItem>
-                          </Select>
-                        </TableCell>
-                        <TableCell>{notification.title}</TableCell>
-                        <TableCell>{notification.name}</TableCell>
-                        <TableCell>{notification.message}</TableCell>
-                        <TableCell>{notification.id}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </div>
-        )}
 
         {selectedSection === 'settings' && (
           <div>
@@ -389,7 +361,7 @@ function SidebarMenu() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                  {users.map((user) => (
+                    {users.map((user) => (
                       <TableRow key={user.id}>
                         <TableCell>{user.name}</TableCell>
                         <TableCell>{user.email}</TableCell>
