@@ -29,17 +29,6 @@ app.use(cors(corsOptions));
 
 // admin.firestore.setLogFunction(console.log);
 
-app.delete('/deleteuser', async (req, res) => {
-  try {
-      const { email } = req.body;
-
-      // Your deletion logic goes here
-  } catch (error) {
-      console.error('Error deleting user:', error);
-      res.status(500).json({ error: 'Failed to delete user' });
-  }
-});
-
 
 app.post('/signin', async (req, res) => {
     const { email, password } = req.body;
@@ -84,7 +73,27 @@ app.post('/addnotification', async (req, res) => {
         res.status(500).json({ error: 'Failed to add notification' });
     }
 });
+app.delete('/deleteuser', async (req, res) => {
+  try {
+    const { email } = req.body;
 
+    // Check if the user exists
+    const userQuerySnapshot = await db.collection('users').where('email', '==', email).get();
+    if (userQuerySnapshot.empty) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Delete the user
+    userQuerySnapshot.forEach(async (doc) => {
+      await db.collection('users').doc(doc.id).delete();
+    });
+
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Failed to delete user' });
+  }
+});
 app.get('/getnotifications', async (req, res) => {
     try {
         const snapshot = await db.collection('notifications').get();
@@ -123,6 +132,13 @@ app.put('/updatenotification/:id', async (req, res) => {
     try {
       const { name, email, password, type } = req.body;
   
+      // Check if the user already exists
+      const userQuerySnapshot = await db.collection('users').where('email', '==', email).get();
+      if (!userQuerySnapshot.empty) {
+        return res.status(400).json({ error: 'User with this email already exists' });
+      }
+  
+      // If the user doesn't exist, create a new user
       const userRef = await db.collection('users').add({
         name: name,
         email: email,
