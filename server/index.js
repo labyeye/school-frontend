@@ -170,6 +170,7 @@ app.put('/updatenotification/:id', async (req, res) => {
       res.status(500).json({ error: 'Failed to create user' });
     }
   });
+
   app.post('/addparentemail', async (req, res) => {
     try {
       const {email} = req.body;
@@ -199,6 +200,39 @@ app.put('/updatenotification/:id', async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch users' });
     }
   });
+
+  app.get('/getparentemailslist', async (req, res) => {
+    try {
+        const parentEmails = [];
+        
+        const querySnapshot = await db.collection('parents').get();
+        
+        
+        querySnapshot.forEach((doc) => {
+            const email = doc.data().email;
+            parentEmails.push({ id: doc.id, email });
+        });
+
+        
+        res.status(200).json({ parentEmails });
+    } catch (error) {
+        console.error('Error fetching parent emails:', error);
+        res.status(500).json({ error: 'Failed to fetch parent emails' });
+    }
+});
+
+app.delete('/deleteparentemail/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await db.collection('parents').doc(id).delete();
+        res.status(200).json({ message: 'Parent email deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting parent email:', error);
+        res.status(500).json({ error: 'Failed to delete parent email' });
+    }
+});
+
+
   
 // Start the server
 app.listen(port, () => {

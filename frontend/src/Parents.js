@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, Button, TextField } from '@mui/material';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, Button, TextField,TableHead } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { Link } from 'react-router-dom';
 import InboxIcon from "@mui/icons-material/Inbox";
-
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import axios from 'axios';
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   width: 240,
@@ -29,60 +34,49 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
 }));
 
 function Parents() {
-  const [selectedSection, setSelectedSection] = useState('dashboard');
   const [newemail, setnewEmail] = useState('');
   const [emails, setEmails] = useState([]);
 
-  const fetchParents = async () => {
+  useEffect(() => {
+    getParentEmails();
+  }, []);
+
+  const getParentEmails = async () => {
     try {
-      const response = await fetch(
-        "https://school-frontend-98qa.vercel.app/getparentemails"
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setEmails(data);
-      } else {
-        console.error("Failed to fetch users:", response.statusText);
-      }
+      const response = await axios.get('/getparentemailslist');
+      setEmails(response.data.parentEmails);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error('Error fetching parent emails:', error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`/deleteparentemail/${id}`);
+      setEmails(emails.filter((email) => email.id !== id));
+    } catch (error) {
+      console.error('Error deleting parent email:', error);
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('https://school-frontend-98qa.vercel.app/addparentemail', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: newemail,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Parents Email Added successfully:', data);
-      } else {
-        console.error('Failed to add email:', response.statusText);
-      }
+      const response = await axios.post('/addparentemail', { email: newemail });
+      console.log('Parents Email Added successfully:', response.data);
+      setnewEmail('');
+      getParentEmails();
     } catch (error) {
       console.error('Error creating email:', error);
     }
   };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex' ,flexDirection:'column'}}>
       <StyledDrawer variant="permanent" anchor="left">
         <List>
           {/* Dashboard Section */}
-          <ListItem
-            button
-            component={Link}
-            onClick={() => setSelectedSection('dashboard')}
-          >
+          <ListItem button component={Link}>
             <ListItemIcon>
               <DashboardIcon style={{ color: '#fff' }} />
             </ListItemIcon>
@@ -90,21 +84,8 @@ function Parents() {
           </ListItem>
 
           {/* Inbox Section */}
-          
           <StyledDivider />
-          <ListItem
-            button
-            component={Link}
-            onClick={() => {
-              // Clear local storage values
-              localStorage.removeItem("userType");
-              localStorage.removeItem("name");
-              localStorage.removeItem("email");
-
-              // Redirect to root route
-              window.location.href = "/";
-            }}
-          >
+          <ListItem button component={Link}>
             <ListItemIcon>
               <InboxIcon style={{ color: "red" }} />
             </ListItemIcon>
@@ -113,26 +94,52 @@ function Parents() {
         </List>
       </StyledDrawer>
 
+      <div style={{width:'40%',marginLeft:'200px'}}>
       <form>
-
+        <h3 style={{ marginLeft: "100px" }}>Add emails ids below</h3>
         <TextField
           label="Email"
           value={newemail}
           onChange={(e) => setnewEmail(e.target.value)}
           fullWidth
           required
+          type="email"
           style={{ marginBottom: '10px', marginTop: '20px', marginLeft: '100px' }}
         />
-
-
-        <Button variant="contained" type="submit" onClick={handleSubmit} style={{ backgroundColor: 'black', color: 'white', marginBottom: '10px', marginTop: '20px', marginLeft: '100px' }}>
+        <Button
+          variant="contained"
+          type="submit"
+          onClick={handleSubmit}
+          style={{ backgroundColor: 'black', color: 'white', marginBottom: '10px', marginTop: '20px', marginLeft: '100px' }}
+        >
           Submit
         </Button>
-        
-        
       </form>
-      
 
+      <br />
+      <br />
+      <br />
+      <TableContainer component={Paper} style={{marginLeft:'100px'}} >
+        <Table aria-label="parent-emails-table">
+          <TableHead>
+            <TableRow style={{ backgroundColor: 'black' }}>
+              <TableCell style={{ color: 'white' }}>Email id</TableCell>
+              <TableCell style={{ color: 'white' }}>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {emails.map((email) => (
+              <TableRow key={email.id}>
+                <TableCell>{email.email}</TableCell>
+                <TableCell>
+                  <Button variant="contained" onClick={() => handleDelete(email.id)}>Delete</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      </div>
     </div>
   );
 }
