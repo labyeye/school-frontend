@@ -196,26 +196,16 @@ const handleDeleteSubmit = async () => {
           headers: {
               'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-              email: email,
-          }),
+          body: JSON.stringify(email), // Sending just the email string
       });
 
-      if (response.ok) {
-          const data = await response.json();
-          console.log('User deleted successfully:', data);
-          alert('User deleted successfully!');
-          window.location.reload();
-      } else {
-          const errorData = await response.json();
-          console.error('Failed to delete user:', errorData.error);
-          alert(errorData.error);
-      }
+      // Rest of your code handling the response
   } catch (error) {
       console.error('Error deleting user:', error);
       alert('Error deleting user. Please try again later.');
   }
 };
+
 
 
   return (

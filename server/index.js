@@ -29,6 +29,18 @@ app.use(cors(corsOptions));
 
 // admin.firestore.setLogFunction(console.log);
 
+app.delete('/deleteuser', async (req, res) => {
+  try {
+      const { email } = req.body;
+
+      // Your deletion logic goes here
+  } catch (error) {
+      console.error('Error deleting user:', error);
+      res.status(500).json({ error: 'Failed to delete user' });
+  }
+});
+
+
 app.post('/signin', async (req, res) => {
     const { email, password } = req.body;
 
