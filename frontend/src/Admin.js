@@ -43,7 +43,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CheckIcon from "@mui/icons-material/Check";
-
+import toast, { Toaster } from 'react-hot-toast';
 import MenuIcon from "@mui/icons-material/Menu";
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
@@ -82,6 +82,9 @@ function SidebarMenu() {
   const [users, setUsers] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  // PARENT EMAILS 
+  const [parentEmails, setParentEmails] = useState([]);
+
   // DELETE USER
   const [open, setOpen] = useState(false);
   // const [email, setEmail] = useState('');
@@ -90,10 +93,21 @@ function SidebarMenu() {
   useEffect(() => {
     handleGetNotifications();
     fetchUsers();
+    fetchParentEmails();
   }, []);
 
-  const sendEmailToParents = (title, message, parentEmail) => {
-    parentEmail.forEach((parentEmail) => {
+  const fetchParentEmails = async () => {
+    try {
+      const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemails');
+      const data = await response.json();
+      setParentEmails(data);
+    } catch (error) {
+      console.error('Error fetching parent emails:', error);
+    }
+  };
+
+  const sendEmailToParents = (title, message) => {
+    parentEmails.forEach((parentEmail) => {
       const templateParams = {
         title: title,
         message: message,
@@ -109,12 +123,38 @@ function SidebarMenu() {
         )
         .then((response) => {
           console.log(`Email sent to ${parentEmail}:`, response);
+          toast.success("Emails successfully sent");
         })
         .catch((error) => {
           console.error(`Error sending email to ${parentEmail}:`, error);
         });
     });
   };
+
+  // const sendEmailToParents = (title, message, parentEmail) => {
+  //   parentEmail.forEach((parentEmail) => {
+  //     const templateParams = {
+  //       title: title,
+  //       message: message,
+  //       tomail: parentEmail,
+  //     };
+
+  //     emailjs
+  //       .send(
+  //         "service_o0zvik4",
+  //         "template_rgo8jsb",
+  //         templateParams,
+  //         "crc_OthtMutwA5FNS"
+  //       )
+  //       .then((response) => {
+  //         console.log(`Email sent to ${parentEmail}:`, response);
+  //         toast.success("Emails successfully send")
+  //       })
+  //       .catch((error) => {
+  //         console.error(`Error sending email to ${parentEmail}:`, error);
+  //       });
+  //   });
+  // };
 
   const handleGetNotifications = async () => {
     try {
@@ -124,6 +164,7 @@ function SidebarMenu() {
       if (response.ok) {
         const data = await response.json();
         setNotifications(data);
+
       } else {
         console.error("Error fetching notifications:", response.statusText);
       }
@@ -156,7 +197,9 @@ function SidebarMenu() {
     }));
 
     if (newStatus === "a") {
-      sendEmailToParents(notification.title, notification.message, parentEmail);
+      // sendEmailToParents(notification.title, notification.message, parentEmail);
+      sendEmailToParents(notification.title, notification.message, parentEmails);
+
     }
 
     try {
@@ -205,17 +248,17 @@ function SidebarMenu() {
       if (response.ok) {
         const data = await response.json();
         console.log("User created successfully:", data);
-        alert("User created successfully!");
+        toast.success("User created")
         window.location.reload();
       } else {
+        toast.error("Some error occured")
         const errorData = await response.json();
         console.error("Failed to create user:", errorData.error);
         alert(errorData.error);
       }
     } catch (error) {
       console.error("Error creating user:", error);
-      alert("Error creating user. Please try again later.");
-    }
+      toast.error("Some error occured")    }
   };
 
   const handleClickOpen = () => {
@@ -232,6 +275,7 @@ function SidebarMenu() {
 
   const handleDeleteSubmit = async () => {
     try {
+      toast.loading('Deleting...');
       await fetch("https://school-frontend-98qa.vercel.app/deleteuser", {
         method: 'DELETE',
         headers: {
@@ -239,16 +283,16 @@ function SidebarMenu() {
         },
         body: JSON.stringify({ email: deleteemail }), // Sending an object with email property
       });
-      
-      // Display success message after deletion
-      alert('User deleted successfully!');
+      toast.dismiss();
+      toast.success("User Deleted")
     } catch (error) {
+      toast.dismiss();
       console.error('Error deleting user:', error);
-      alert('Error deleting user. Please try again later.');
+      toast.error("Some error occured")
     }
   };
-  
   return (
+
     <div>
       <div style={{ display: "flex" }}>
         <IconButton
@@ -476,8 +520,8 @@ function SidebarMenu() {
                                 selectedStatus[notification.id] === "p"
                                   ? "grey"
                                   : selectedStatus[notification.id] === "r"
-                                  ? "red"
-                                  : "green",
+                                    ? "red"
+                                    : "green",
                             }}
                           >
                             <MenuItem value="p">Pending</MenuItem>
@@ -604,6 +648,7 @@ function SidebarMenu() {
               </Dialog>
             </div>
             <br />
+
             <div>
               <h2>Existing Users</h2>
               <TableContainer component={Paper}>
@@ -630,7 +675,9 @@ function SidebarMenu() {
           </div>
         )}
       </div>
+      <Toaster />
     </div>
+
   );
 }
 
