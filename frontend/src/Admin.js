@@ -201,6 +201,7 @@ const handleDeleteSubmit = async () => {
           body: JSON.stringify(deleteemail), // Sending just the email string
       });
 
+      console.log("TEST")
       // You can omit the 'response' variable if you're not using it
   } catch (error) {
       console.error('Error deleting user:', error);
