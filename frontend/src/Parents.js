@@ -36,7 +36,7 @@ function Parents() {
 
   const getParentEmails = async () => {
     try {
-      const response = await fetch('/getparentemailslist');
+      const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemailslist');
       const data = await response.json();
       setEmails(data.parentEmails || []);
     } catch (error) {
@@ -46,7 +46,7 @@ function Parents() {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`/deleteparentemail/${id}`, { method: 'DELETE' });
+      await fetch(`https://school-frontend-98qa.vercel.app/deleteparentemail/${id}`, { method: 'DELETE' });
       setEmails(emails.filter((email) => email.id !== id));
     } catch (error) {
       console.error('Error deleting parent email:', error);
