@@ -232,18 +232,19 @@ function SidebarMenu() {
 
   const handleDeleteSubmit = async () => {
     try {
-      await fetch("https://school-frontend-98qa.vercel.app/deleteuser", {
-        method: "DELETE",
+      await fetch('https://school-frontend-98qa.vercel.app/deleteuser', {
+        method: 'DELETE',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email: deleteemail }), // Sending an object with email property
       });
     } catch (error) {
-      console.error("Error deleting user:", error);
-      alert("Error deleting user. Please try again later.");
+      console.error('Error deleting user:', error);
+      alert('Error deleting user. Please try again later.');
     }
   };
+  
 
   return (
     <div>
