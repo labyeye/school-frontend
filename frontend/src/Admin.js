@@ -244,8 +244,6 @@ function SidebarMenu() {
       alert('Error deleting user. Please try again later.');
     }
   };
-  
-
   return (
     <div>
       <div style={{ display: "flex" }}>

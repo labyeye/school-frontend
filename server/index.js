@@ -82,7 +82,6 @@ app.delete('/deleteuser', async (req, res) => {
     if (userQuerySnapshot.empty) {
       return res.status(404).json({ error: 'User not found' });
     }
-
     // Delete the user
     userQuerySnapshot.forEach(async (doc) => {
       await db.collection('users').doc(doc.id).delete();
