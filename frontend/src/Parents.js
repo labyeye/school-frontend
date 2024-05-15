@@ -5,7 +5,6 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Link } from 'react-router-dom';
 import InboxIcon from "@mui/icons-material/Inbox";
-import {TableContainer,TableCell,TableBody,Paper,Table,TableHead,TableRow} from '@mui/material';
 
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
@@ -130,26 +129,9 @@ function Parents() {
           Submit
         </Button>
         
+        
       </form>
-      <div>
-              <h2>Existing Users</h2>
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Email</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {emails.map((user) => (
-                      <TableRow key={user.id}>
-                        <TableCell>{user.email}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
+      
 
     </div>
   );
