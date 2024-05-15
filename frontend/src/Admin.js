@@ -74,6 +74,7 @@ function SidebarMenu() {
   const [notifications, setNotifications] = useState([]);
   const [selectedStatus, setSelectedStatuses] = useState({});
 
+
   // NEW USER STATES
   const [newname, setnewName] = useState("");
   const [newemail, setnewEmail] = useState("");
@@ -376,12 +377,12 @@ function SidebarMenu() {
             button
             component={Link}
             onClick={() => {
-              // Clear local storage values
+              
               localStorage.removeItem("userType");
               localStorage.removeItem("name");
               localStorage.removeItem("email");
 
-              // Redirect to root route
+      
               window.location.href = "/";
             }}
           >

@@ -85,7 +85,19 @@ function Parents() {
 
           {/* Inbox Section */}
           <StyledDivider />
-          <ListItem button component={Link}>
+          <ListItem
+            button
+            component={Link}
+            onClick={() => {
+              
+              localStorage.removeItem("userType");
+              localStorage.removeItem("name");
+              localStorage.removeItem("email");
+
+      
+              window.location.href = "/";
+            }}
+          >
             <ListItemIcon>
               <InboxIcon style={{ color: "red" }} />
             </ListItemIcon>
