@@ -56,7 +56,7 @@ function Parents() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await fetch('/addparentemail', {
+      await fetch("https://school-frontend-98qa.vercel.app/addparentemail", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
