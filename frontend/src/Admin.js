@@ -193,7 +193,7 @@ const handleEmailChange = (event) => {
 
 const handleDeleteSubmit = async () => {
   try {
-      const response = await fetch('https://school-frontend-98qa.vercel.app/deleteuser', {
+      await fetch('https://school-frontend-98qa.vercel.app/deleteuser', {
           method: 'DELETE',
           headers: {
               'Content-Type': 'application/json',
@@ -201,14 +201,12 @@ const handleDeleteSubmit = async () => {
           body: JSON.stringify(deleteemail), // Sending just the email string
       });
 
-      // Rest of your code handling the response
+      // You can omit the 'response' variable if you're not using it
   } catch (error) {
       console.error('Error deleting user:', error);
       alert('Error deleting user. Please try again later.');
   }
 };
-
-
 
   return (
     <div>
