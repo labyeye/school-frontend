@@ -604,7 +604,6 @@ function SidebarMenu() {
               </Dialog>
             </div>
             <br />
-
             <div>
               <h2>Existing Users</h2>
               <TableContainer component={Paper}>
