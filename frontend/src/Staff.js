@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import NotificationStateCircle from './NotificationStateCircle';
+import toast, { Toaster } from 'react-hot-toast';
 
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
@@ -85,6 +86,8 @@ function Staff() {
   };
 
   const handleSubmit = async () => {
+    toast.loading('Submitting...');
+
     try {
       const response = await fetch('https://school-frontend-98qa.vercel.app/addnotification', {
         method: 'POST',
@@ -99,15 +102,21 @@ function Staff() {
       });
 
       if (response.ok) {
+        toast.dismiss()
+        toast.success("Notification submitted")
         const data = await response.json();
         console.log('Notification added successfully:', data);
         handleGetNotifications();
         setIsNewNotificationDrawerOpen(false);
         window.reload();
       } else {
+        toast.dismiss()
+        toast.error("Error occured")
         console.error('Failed to add notification:', response.statusText);
       }
     } catch (error) {
+      toast.dismiss()
+      toast.error("Error occured")
       console.error('Error adding notification:', error);
     }
   };
@@ -314,6 +323,7 @@ function Staff() {
           </div>
         </div>
       </Drawer>
+      <Toaster />
     </div>
   );
 }

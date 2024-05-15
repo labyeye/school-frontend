@@ -4,6 +4,8 @@ import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, Button, Te
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Link } from 'react-router-dom';
+import InboxIcon from "@mui/icons-material/Inbox";
+
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   width: 240,
@@ -27,32 +29,32 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
 }));
 
 function Parents() {
-    const [selectedSection, setSelectedSection] = useState('dashboard');
-    const [newemail, setnewEmail] = useState('');
+  const [selectedSection, setSelectedSection] = useState('dashboard');
+  const [newemail, setnewEmail] = useState('');
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        try {
-          const response = await fetch('https://school-frontend-98qa.vercel.app/addparentemail', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              email: newemail,
-            }),
-          });
-    
-          if (response.ok) {
-            const data = await response.json();
-            console.log('Parents Email Added successfully:', data);
-          } else {
-            console.error('Failed to add email:', response.statusText);
-          }
-        } catch (error) {
-          console.error('Error creating email:', error);
-        }
-      };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch('https://school-frontend-98qa.vercel.app/addparentemail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: newemail,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Parents Email Added successfully:', data);
+      } else {
+        console.error('Failed to add email:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error creating email:', error);
+    }
+  };
 
   return (
     <div style={{ display: 'flex' }}>
@@ -71,41 +73,46 @@ function Parents() {
           </ListItem>
 
           {/* Inbox Section */}
-          <StyledDivider />
-
-          {/* Settings Section */}
+          
           <StyledDivider />
           <ListItem
             button
             component={Link}
-            onClick={() => setSelectedSection('settings')}
+            onClick={() => {
+              // Clear local storage values
+              localStorage.removeItem("userType");
+              localStorage.removeItem("name");
+              localStorage.removeItem("email");
+
+              // Redirect to root route
+              window.location.href = "/";
+            }}
           >
             <ListItemIcon>
-              <SettingsIcon style={{ color: '#fff' }} />
+              <InboxIcon style={{ color: "red" }} />
             </ListItemIcon>
-            <StyledListItemText primary="Settings" />
-            
+            <StyledListItemText style={{ color: "red" }} primary="Logout" />
           </ListItem>
         </List>
       </StyledDrawer>
 
       <form>
-              
-              <TextField
-                label="Email"
-                value={newemail}
-                onChange={(e) => setnewEmail(e.target.value)}
-                fullWidth
-                required
-                style={{ marginBottom: '10px' ,marginTop:'20px',marginLeft:'100px'}}
-              />
-             
-             
-              <Button variant="contained" type="submit" onClick={handleSubmit} style={{ backgroundColor: 'black', color: 'white',marginBottom: '10px' ,marginTop:'20px',marginLeft:'100px' }}>
-                Submit
-              </Button>
-            </form>
-      
+
+        <TextField
+          label="Email"
+          value={newemail}
+          onChange={(e) => setnewEmail(e.target.value)}
+          fullWidth
+          required
+          style={{ marginBottom: '10px', marginTop: '20px', marginLeft: '100px' }}
+        />
+
+
+        <Button variant="contained" type="submit" onClick={handleSubmit} style={{ backgroundColor: 'black', color: 'white', marginBottom: '10px', marginTop: '20px', marginLeft: '100px' }}>
+          Submit
+        </Button>
+      </form>
+
     </div>
   );
 }
