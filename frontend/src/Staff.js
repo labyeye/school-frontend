@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import NotificationStateCircle from './NotificationStateCircle';
-import toast, { Toaster } from 'react-hot-toast';
+import toast , {Toaster} from 'react-hot-toast';
 
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
