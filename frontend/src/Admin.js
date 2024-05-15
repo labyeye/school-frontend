@@ -192,6 +192,7 @@ const handleEmailChange = (event) => {
 };
 
 const handleDeleteSubmit = async () => {
+  console.log("DFUNC")
   try {
       await fetch('https://school-frontend-98qa.vercel.app/deleteuser', {
           method: 'DELETE',
