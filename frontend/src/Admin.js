@@ -58,7 +58,9 @@ function SidebarMenu() {
 
   // DELETE USER
   const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState('');
+  // const [email, setEmail] = useState('');
+  const [deleteemail, setDeleteEmail] = useState('');
+
 
   useEffect(() => {
     handleGetNotifications();
@@ -186,7 +188,7 @@ const handleClose = () => {
 };
 
 const handleEmailChange = (event) => {
-  setEmail(event.target.value);
+  setDeleteEmail(event.target.value);
 };
 
 const handleDeleteSubmit = async () => {
@@ -196,7 +198,7 @@ const handleDeleteSubmit = async () => {
           headers: {
               'Content-Type': 'application/json',
           },
-          body: JSON.stringify(email), // Sending just the email string
+          body: JSON.stringify(deleteemail), // Sending just the email string
       });
 
       // Rest of your code handling the response
@@ -475,7 +477,7 @@ const handleDeleteSubmit = async () => {
                         label="Email Address"
                         type="email"
                         fullWidth
-                        value={email}
+                        value={deleteemail}
                         onChange={handleEmailChange}
                     />
                 </DialogContent>
