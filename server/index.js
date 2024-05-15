@@ -93,6 +93,24 @@ app.delete('/deleteuser', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete user' });
   }
 });
+app.get('/getparentemails', async (req, res) => {
+  try {
+    const snapshot = await db.collection('parents').get();
+    const emails = [];
+
+    snapshot.forEach(doc => {
+      const email = doc.data().email;
+      emails.push(email);
+      console.log(email);
+    });
+
+    res.status(200).json(emails);
+  } catch (error) {
+    console.error('Error fetching parent emails:', error);
+    res.status(500).json({ error: 'Failed to fetch parent emails' });
+  }
+});
+
 
 app.get('/getnotifications', async (req, res) => {
     try {
