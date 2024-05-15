@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles';
 import { Drawer, List, ListItem,TableHead, ListItemIcon, ListItemText, Divider, Button, TextField, Table, TableBody, TableCell, TableContainer, TableRow, Paper } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import InboxIcon from "@mui/icons-material/Inbox";
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
@@ -37,8 +36,9 @@ function Parents() {
 
   const getParentEmails = async () => {
     try {
-      const response = await axios.get('/getparentemailslist');
-      setEmails(response.data.parentEmails || []);
+      const response = await fetch('/getparentemailslist');
+      const data = await response.json();
+      setEmails(data.parentEmails || []);
     } catch (error) {
       console.error('Error fetching parent emails:', error);
     }
@@ -46,7 +46,7 @@ function Parents() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/deleteparentemail/${id}`);
+      await fetch(`/deleteparentemail/${id}`, { method: 'DELETE' });
       setEmails(emails.filter((email) => email.id !== id));
     } catch (error) {
       console.error('Error deleting parent email:', error);
@@ -56,8 +56,14 @@ function Parents() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('/addparentemail', { email: newemail });
-      console.log('Parent Email Added successfully:', response.data);
+      await fetch('/addparentemail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: newemail }),
+      });
+      console.log('Parent Email Added successfully');
       setnewEmail('');
       getParentEmails();
     } catch (error) {
@@ -90,7 +96,7 @@ function Parents() {
 
       <div style={{width:'40%',marginLeft:'200px'}}>
         <form onSubmit={handleSubmit}>
-          <h3 style={{marginLeft:'100PX'}}>Add emails ids below</h3>
+          <h3 style={{marginLeft:'100px'}}>Add emails ids below</h3>
           <TextField
             label="Email"
             value={newemail}
