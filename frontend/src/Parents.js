@@ -31,6 +31,23 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
 function Parents() {
   const [selectedSection, setSelectedSection] = useState('dashboard');
   const [newemail, setnewEmail] = useState('');
+  const [emails, setEmails] = useState([]);
+
+  const fetchParents = async () => {
+    try {
+      const response = await fetch(
+        "https://school-frontend-98qa.vercel.app/getparentemails"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setEmails(data);
+      } else {
+        console.error("Failed to fetch users:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -111,7 +128,27 @@ function Parents() {
         <Button variant="contained" type="submit" onClick={handleSubmit} style={{ backgroundColor: 'black', color: 'white', marginBottom: '10px', marginTop: '20px', marginLeft: '100px' }}>
           Submit
         </Button>
+        
       </form>
+      <div>
+              <h2>Existing Users</h2>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Email</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {emails.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell>{user.email}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
 
     </div>
   );

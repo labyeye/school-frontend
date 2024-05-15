@@ -239,11 +239,15 @@ function SidebarMenu() {
         },
         body: JSON.stringify({ email: deleteemail }), // Sending an object with email property
       });
+      
+      // Display success message after deletion
+      alert('User deleted successfully!');
     } catch (error) {
       console.error('Error deleting user:', error);
       alert('Error deleting user. Please try again later.');
     }
   };
+  
   return (
     <div>
       <div style={{ display: "flex" }}>
