@@ -84,6 +84,20 @@ function Parents() {
               <SettingsIcon style={{ color: '#fff' }} />
             </ListItemIcon>
             <StyledListItemText primary="Settings" />
+            <ListItem button component={Link} onClick={() => {
+            // Clear local storage values
+            localStorage.removeItem('userType');
+            localStorage.removeItem('name');
+            localStorage.removeItem('email');
+
+            // Redirect to root route
+            window.location.href = '/';
+          }}>
+            <ListItemIcon>
+              <InboxIcon style={{ color: 'red' }} />
+            </ListItemIcon>
+            <StyledListItemText style={{ color: 'red' }} primary="Logout" />
+          </ListItem>
           </ListItem>
         </List>
       </StyledDrawer>

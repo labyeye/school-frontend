@@ -94,6 +94,7 @@ app.delete('/deleteuser', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete user' });
   }
 });
+
 app.get('/getnotifications', async (req, res) => {
     try {
         const snapshot = await db.collection('notifications').get();
