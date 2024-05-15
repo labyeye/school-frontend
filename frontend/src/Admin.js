@@ -232,7 +232,7 @@ function SidebarMenu() {
 
   const handleDeleteSubmit = async () => {
     try {
-      await fetch('https://school-frontend-98qa.vercel.app/deleteuser', {
+      await fetch("https://school-frontend-98qa.vercel.app/deleteuser", {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
