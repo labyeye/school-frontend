@@ -44,7 +44,7 @@ function Parents() {
   const getParentEmails = async () => {
     try {
       const response = await axios.get('/getparentemailslist');
-      setEmails(response.data.parentEmails);
+      setEmails(response.data.parentEmails || []);
     } catch (error) {
       console.error('Error fetching parent emails:', error);
     }
