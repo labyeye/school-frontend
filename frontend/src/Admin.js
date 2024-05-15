@@ -11,6 +11,12 @@ import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import emailjs from 'emailjs-com';
 import parentsData from './parents.json';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import CheckIcon from '@mui/icons-material/Check';
 
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -49,6 +55,10 @@ function SidebarMenu() {
   const [newtype, setnewType] = useState('staff');
   const [users, setUsers] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  // DELETE USER
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     handleGetNotifications();
@@ -138,31 +148,75 @@ function SidebarMenu() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('https://school-frontend-98qa.vercel.app/createuser', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: newname,
-          email: newemail,
-          password: newpassword,
-          type: newtype,
-        }),
+        const response = await fetch('https://school-frontend-98qa.vercel.app/createuser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: newname,
+                email: newemail,
+                password: newpassword,
+                type: newtype,
+            }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('User created successfully:', data);
+            alert('User created successfully!');
+            window.location.reload(); 
+        } else {
+            const errorData = await response.json();
+            console.error('Failed to create user:', errorData.error);
+            alert(errorData.error);
+        }
+    } catch (error) {
+        console.error('Error creating user:', error);
+        alert('Error creating user. Please try again later.');
+    }
+};
+
+const handleClickOpen = () => {
+  setOpen(true);
+};
+
+const handleClose = () => {
+  setOpen(false);
+};
+
+const handleEmailChange = (event) => {
+  setEmail(event.target.value);
+};
+
+const handleDeleteSubmit = async () => {
+  try {
+      const response = await fetch('https://school-frontend-98qa.vercel.app/deleteuser', {
+          method: 'DELETE',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              email: email,
+          }),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        console.log('User created successfully:', data);
-        window.reload();
+          const data = await response.json();
+          console.log('User deleted successfully:', data);
+          alert('User deleted successfully!');
+          window.location.reload();
       } else {
-        console.error('Failed to create user:', response.statusText);
+          const errorData = await response.json();
+          console.error('Failed to delete user:', errorData.error);
+          alert(errorData.error);
       }
-      
-    } catch (error) {
-      console.error('Error creating user:', error);
-    }
-  };
+  } catch (error) {
+      console.error('Error deleting user:', error);
+      alert('Error deleting user. Please try again later.');
+  }
+};
+
 
   return (
     <div>
@@ -367,6 +421,7 @@ function SidebarMenu() {
         {selectedSection === 'add' && (
           <div>
             <h2>User manager</h2>
+            
             <form>
               <TextField
                 label="Name"
@@ -412,6 +467,40 @@ function SidebarMenu() {
               </Button>
             </form>
             <br />
+            <h2>Account Termination</h2>
+            <div>
+            <Button variant="contained" color="error" onClick={handleClickOpen}>
+                Select Account
+            </Button>
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Delete User</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Please enter the email ID of the user you want to delete.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="email"
+                        label="Email Address"
+                        type="email"
+                        fullWidth
+                        value={email}
+                        onChange={handleEmailChange}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="inherit">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleDeleteSubmit} color="error" startIcon={<CheckIcon />}>
+                        Confirm & Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </div>
+            <br/>
+
             <div>
               <h2>Existing Users</h2>
               <TableContainer component={Paper}>
