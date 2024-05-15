@@ -284,7 +284,6 @@ function SidebarMenu() {
         body: JSON.stringify({ email: deleteemail }), // Sending an object with email property
       });
       toast.dismiss();
-      toast.success("User Deleted")
     } catch (error) {
       toast.dismiss();
       console.error('Error deleting user:', error);

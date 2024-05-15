@@ -173,18 +173,18 @@ app.put('/updatenotification/:id', async (req, res) => {
 
   app.post('/addparentemail', async (req, res) => {
     try {
-      const {email} = req.body;
-  
-      const userRef = await db.collection('parents').add({
-        email: email,
-      });
-  
-      res.status(201).json({ message: 'Parents Email Added successfully', id: userRef.id });
+        const { email } = req.body;
+
+        const userRef = await db.collection('parents').add({
+            email: email,
+        });
+
+        res.status(201).json({ message: 'Parent Email Added successfully', id: userRef.id });
     } catch (error) {
-      console.error('Error adding email:', error);
-      res.status(500).json({ error: 'Failed to add parents email' });
+        console.error('Error adding email:', error);
+        res.status(500).json({ error: 'Failed to add parent email' });
     }
-  });
+});
 
   app.get('/users', async (req, res) => {
     try {
@@ -204,16 +204,13 @@ app.put('/updatenotification/:id', async (req, res) => {
   app.get('/getparentemailslist', async (req, res) => {
     try {
         const parentEmails = [];
-        
         const querySnapshot = await db.collection('parents').get();
-        
-        
+
         querySnapshot.forEach((doc) => {
             const email = doc.data().email;
             parentEmails.push({ id: doc.id, email });
         });
 
-        
         res.status(200).json({ parentEmails });
     } catch (error) {
         console.error('Error fetching parent emails:', error);

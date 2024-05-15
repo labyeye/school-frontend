@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, Divider, Button, TextField,TableHead } from '@mui/material';
+import { Drawer, List, ListItem,TableHead, ListItemIcon, ListItemText, Divider, Button, TextField, Table, TableBody, TableCell, TableContainer, TableRow, Paper } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import { Link } from 'react-router-dom';
 import InboxIcon from "@mui/icons-material/Inbox";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   width: 240,
@@ -63,7 +57,7 @@ function Parents() {
     event.preventDefault();
     try {
       const response = await axios.post('/addparentemail', { email: newemail });
-      console.log('Parents Email Added successfully:', response.data);
+      console.log('Parent Email Added successfully:', response.data);
       setnewEmail('');
       getParentEmails();
     } catch (error) {
@@ -95,50 +89,49 @@ function Parents() {
       </StyledDrawer>
 
       <div style={{width:'40%',marginLeft:'200px'}}>
-      <form>
-        <h3 style={{ marginLeft: "100px" }}>Add emails ids below</h3>
-        <TextField
-          label="Email"
-          value={newemail}
-          onChange={(e) => setnewEmail(e.target.value)}
-          fullWidth
-          required
-          type="email"
-          style={{ marginBottom: '10px', marginTop: '20px', marginLeft: '100px' }}
-        />
-        <Button
-          variant="contained"
-          type="submit"
-          onClick={handleSubmit}
-          style={{ backgroundColor: 'black', color: 'white', marginBottom: '10px', marginTop: '20px', marginLeft: '100px' }}
-        >
-          Submit
-        </Button>
-      </form>
+        <form onSubmit={handleSubmit}>
+          <h3 style={{marginLeft:'100PX'}}>Add emails ids below</h3>
+          <TextField
+            label="Email"
+            value={newemail}
+            onChange={(e) => setnewEmail(e.target.value)}
+            fullWidth
+            required
+            type="email"
+            style={{ marginBottom: '10px', marginTop: '20px', marginLeft: '100px' }}
+          />
+          <Button
+            variant="contained"
+            type="submit"
+            style={{ backgroundColor: 'black', color: 'white', marginBottom: '10px', marginTop: '20px', marginLeft: '100px' }}
+          >
+            Submit
+          </Button>
+        </form>
 
-      <br />
-      <br />
-      <br />
-      <TableContainer component={Paper} style={{marginLeft:'100px'}} >
-        <Table aria-label="parent-emails-table">
-          <TableHead>
-            <TableRow style={{ backgroundColor: 'black' }}>
-              <TableCell style={{ color: 'white' }}>Email id</TableCell>
-              <TableCell style={{ color: 'white' }}>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {emails.map((email) => (
-              <TableRow key={email.id}>
-                <TableCell>{email.email}</TableCell>
-                <TableCell>
-                  <Button variant="contained" onClick={() => handleDelete(email.id)}>Delete</Button>
-                </TableCell>
+        <br />
+        <br />
+        <br />
+        <TableContainer component={Paper} style={{marginLeft:'100px'}} >
+          <Table aria-label="parent-emails-table">
+            <TableHead>
+              <TableRow style={{ backgroundColor: 'black' }}>
+                <TableCell style={{ color: 'white' }}>Email id</TableCell>
+                <TableCell style={{ color: 'white' }}>Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {emails.map((email) => (
+                <TableRow key={email.id}>
+                  <TableCell>{email.email}</TableCell>
+                  <TableCell>
+                    <Button variant="contained" onClick={() => handleDelete(email.id)}>Delete</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
     </div>
   );
