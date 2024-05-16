@@ -203,7 +203,6 @@ function SidebarMenu() {
   };
 
   useEffect(() => {
-    // Assuming notifications contains the notifications array received from the API
     const initialSelectedStatus = {};
     notifications.forEach(notification => {
       initialSelectedStatus[notification.tick] = notification.status;
@@ -236,13 +235,14 @@ function SidebarMenu() {
       ...prevStatus,
       [notification.tick]: newStatus
     }));
-
+  
     if (newStatus === "a") {
-      // sendEmailToParents(notification.title, notification.message, parentEmail);
-      sendEmailToParents(notification.title, notification.message, parentEmails);
-
+      // FILTER THE PARENTS EMAIL ID
+      const filteredParentEmails = parentEmails.filter(email => email.grade === notification.grade);
+      // EMAIL SEND TRIGGER
+      sendEmailToParents(notification.title, notification.message, filteredParentEmails);
     }
-
+  
     try {
       const response = await fetch(
         `https://school-frontend-98qa.vercel.app/updatenotification/${notification.id}`,

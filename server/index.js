@@ -172,6 +172,23 @@ app.put('/updatenotification/:id', async (req, res) => {
     }
   });
 
+  
+
+  app.get('/users', async (req, res) => {
+    try {
+      const snapshot = await db.collection('users').get();
+      const users = [];
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        users.push({ id: doc.id, ...data });
+      });
+      res.status(200).json(users);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ error: 'Failed to fetch users' });
+    }
+  });
+
   app.post('/addparentemail', async (req, res) => {
     try {
         const { email,grade } = req.body;
@@ -188,21 +205,6 @@ app.put('/updatenotification/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to add parent email' });
     }
 });
-
-  app.get('/users', async (req, res) => {
-    try {
-      const snapshot = await db.collection('users').get();
-      const users = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        users.push({ id: doc.id, ...data });
-      });
-      res.status(200).json(users);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      res.status(500).json({ error: 'Failed to fetch users' });
-    }
-  });
 
   app.get('/getparentemailslist', async (req, res) => {
     try {
