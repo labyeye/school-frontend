@@ -4,23 +4,25 @@ import {
   Drawer,
   List,
   ListItem,
-  TableHead,
   ListItemIcon,
   ListItemText,
-  Divider,
-  Button,
-  TextField,
+  IconButton,
   Table,
   TableBody,
   TableCell,
+  TableHead,
   TableContainer,
   TableRow,
   Paper,
   Select,
   MenuItem,
+  Button,
+  TextField,
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import InboxIcon from "@mui/icons-material/Inbox";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import { Link } from "react-router-dom";
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
@@ -36,31 +38,30 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   },
 }));
 
-
-
-
-
 const StyledListItemText = styled(ListItemText)(({ theme }) => ({
   color: "#fff",
 }));
 
-const StyledDivider = styled(Divider)(({ theme }) => ({
-  backgroundColor: "#4d4d4d",
+const StyledDivider = styled("div")(({ theme }) => ({
+  margin: theme.spacing(1, 0),
 }));
 
 function Parents() {
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [newemail, setnewEmail] = useState("");
   const [emails, setEmails] = useState([]);
-  const [grade, setGrade] = useState('g1');
-
-
+  const [grade, setGrade] = useState("g1");
 
   useEffect(() => {
     getParentEmails();
   }, []);
 
   const handleGradeChange = (event) => {
-    setGrade(event.target.value); 
+    setGrade(event.target.value);
+  };
+
+  const toggleDrawer = () => {
+    setOpenDrawer(!openDrawer);
   };
 
   const getParentEmails = async () => {
@@ -103,13 +104,22 @@ function Parents() {
     } catch (error) {
       console.error("Error creating email:", error);
     }
-  };  
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <StyledDrawer variant="permanent" anchor="left">
+      <div>
+      <IconButton onClick={toggleDrawer} style={{ color: "black",float:'left' }}>
+        <MenuIcon />
+      </IconButton>
+      </div>
+      <StyledDrawer
+        variant="temporary"
+        anchor="left"
+        open={openDrawer}
+        onClose={toggleDrawer}
+      >
         <List>
-          {/* Dashboard Section */}
           <ListItem button component={Link}>
             <ListItemIcon>
               <DashboardIcon style={{ color: "#fff" }} />
@@ -117,8 +127,8 @@ function Parents() {
             <StyledListItemText primary="Dashboard" />
           </ListItem>
 
-          {/* Inbox Section */}
           <StyledDivider />
+
           <ListItem
             button
             component={Link}
@@ -138,7 +148,7 @@ function Parents() {
         </List>
       </StyledDrawer>
 
-      <div style={{ width: "40%", marginLeft: "200px" }}>
+      <div style={{ width:'90%', marginLeft: "-90px",marginRight:"100px" }}>
         <form onSubmit={handleSubmit}>
           <h3 style={{ marginLeft: "100px" }}>Add emails ids below</h3>
           <TextField
@@ -155,9 +165,9 @@ function Parents() {
             }}
           />
           <Select
-          value={grade}
-          onChange={handleGradeChange}
-          style={{marginLeft:"100px"}}
+            value={grade}
+            onChange={handleGradeChange}
+            style={{ marginLeft: "100px" }}
           >
             <MenuItem value="g1">Grade 1</MenuItem>
             <MenuItem value="g2">Grade 2</MenuItem>
