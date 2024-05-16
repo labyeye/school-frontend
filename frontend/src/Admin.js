@@ -286,10 +286,17 @@ function SidebarMenu() {
       try {
         const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemails'); 
         const data = await response.json();
-        console.log(data); // Log the response data to inspect its structure
-        const filteredParentEmails = data.parentEmails.filter(email => email.grade === notification.grade);
-        setFilteredEmails(filteredParentEmails); // Store filtered emails in state
-        sendEmailToParents(notification.title, notification.message, filteredParentEmails);
+        console.log(data); 
+        if (data && data.parentEmails) {
+          
+          const filteredParentEmails = data.parentEmails.filter(email => email.grade === notification.grade);
+          console.log(filteredParentEmails); 
+          console.log(notification.title, notification.message, filteredParentEmails,notification.grade, data.parentEmail.grade); // Log notification details
+          
+          sendEmailToParents(notification.title, notification.message, filteredParentEmails);
+        } else {
+          console.error('Invalid or missing data in API response');
+        }
       } catch (error) {
         console.error('Error fetching parent emails:', error);
       }
@@ -298,7 +305,7 @@ function SidebarMenu() {
 
 
     try {
-      // Update notification status
+      
       const response = await fetch(
         `https://school-frontend-98qa.vercel.app/updatenotification/${notification.id}`,
         {
@@ -526,7 +533,7 @@ function SidebarMenu() {
       >
         {selectedSection === "dashboard" && (
           <div>
-            <h2>👋 Welcome!! !</h2>
+            <h2>👋 Welcome!! ! !!</h2>
             <p style={{ color: "grey", fontSize: "20px" }}>Overview</p>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={3}>
