@@ -211,7 +211,7 @@ app.put('/updatenotification/:id', async (req, res) => {
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             const { email, grade } = data;
-            parentEmails.push({ id: doc.id, email });
+            parentEmails.push({ id: doc.id, email,grade });
         });
 
         res.status(200).json({ parentEmails });
