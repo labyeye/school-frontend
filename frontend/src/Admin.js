@@ -237,10 +237,14 @@ function SidebarMenu() {
     }));
   
     if (newStatus === "a") {
-      // FILTER THE PARENTS EMAIL ID
-      const filteredParentEmails = parentEmails.filter(email => email.grade === notification.grade);
-      // EMAIL SEND TRIGGER
-      sendEmailToParents(notification.title, notification.message, filteredParentEmails);
+      try {
+        const response = await fetch("https://school-frontend-98qa.vercel.app/updatenotification/getparentemailslist");
+        const data = await response.json();
+        const filteredParentEmails = data.parentEmails.filter(email => email.grade === notification.grade);
+        sendEmailToParents(notification.title, notification.message, filteredParentEmails);
+      } catch (error) {
+        console.error('Error fetching parent emails:', error);
+      }
     }
   
     try {
@@ -262,6 +266,8 @@ function SidebarMenu() {
       console.error("Error updating notification status:", error);
     }
   };
+  
+  
 
   const renderRowColor = (index) => {
     return index % 2 === 0 ? "white" : "#f2f2f2";

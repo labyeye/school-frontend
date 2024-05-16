@@ -117,7 +117,6 @@ function Staff() {
         window.reload();
       } else {
         toast.dismiss()
-        toast.error("Error occured")
         console.error('Failed to add notification:', response.statusText);
       }
     } catch (error) {
