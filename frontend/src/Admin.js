@@ -559,7 +559,6 @@ function SidebarMenu() {
             </Grid>
           </div>
         )}
-
         {selectedSection === "inbox" && (
           <div>
             <div>
