@@ -173,10 +173,12 @@ app.put('/updatenotification/:id', async (req, res) => {
 
   app.post('/addparentemail', async (req, res) => {
     try {
-        const { email } = req.body;
+        const { email,grade } = req.body;
 
         const userRef = await db.collection('parents').add({
             email: email,
+            grade: grade,
+
         });
 
         res.status(201).json({ message: 'Parent Email Added successfully', id: userRef.id });
