@@ -103,6 +103,7 @@ function Staff() {
           message: message,
           name: name,
           title: title,
+          grade: grade,
         }),
       });
 

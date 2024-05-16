@@ -58,13 +58,14 @@ async function getUserByEmailAndPassword(email, password) {
 
 app.post('/addnotification', async (req, res) => {
     try {
-        const { message, name, title } = req.body;
+        const { message, name, title, grade } = req.body;
         const tick = 'p';
         const notificationRef = await db.collection('notifications').add({
             message,
             name,
             title,
-            tick
+            tick,
+            grade
         });
 
         res.status(201).json({ message: 'Notification added successfully', id: notificationRef.id });
