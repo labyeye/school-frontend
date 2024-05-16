@@ -6,11 +6,12 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,MenuItem,Select } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import NotificationStateCircle from './NotificationStateCircle';
 import toast , {Toaster} from 'react-hot-toast';
+
 
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
@@ -44,6 +45,7 @@ function Staff() {
   const [isNewNotificationDrawerOpen, setIsNewNotificationDrawerOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
+  const [grade, setGrade] = useState('g1');
 
   useEffect(() => {
     const userTypeFromStorage = localStorage.getItem('userType');
@@ -79,6 +81,9 @@ function Staff() {
 
   const newNotification = () => {
     setIsNewNotificationDrawerOpen(true);
+  };
+  const handleGradeChange = (event) => {
+    setGrade(event.target.value); 
   };
 
   const closeNewNotificationDrawer = () => {
@@ -275,6 +280,7 @@ function Staff() {
                       <TableCell style={{ color: 'white' }}>Status</TableCell>
                       <TableCell style={{ color: 'white' }}>Title</TableCell>
                       <TableCell style={{ color: 'white' }}>Name</TableCell>
+                      <TableCell style={{ color: 'white' }}>Grade</TableCell>
                       <TableCell style={{ color: 'white' }}>Message</TableCell>
                       <TableCell style={{ color: 'white' }}>ID</TableCell>
                     </TableRow>
@@ -285,6 +291,7 @@ function Staff() {
                         <NotificationStateCircle tick={notification.tick} />
                         <TableCell>{notification.title}</TableCell>
                         <TableCell>{notification.name}</TableCell>
+                        <TableCell>{notification.grade}</TableCell>
                         <TableCell>{notification.message}</TableCell>
                         <TableCell>{notification.id}</TableCell>
                       </TableRow>
@@ -316,7 +323,26 @@ function Staff() {
             </div>
             <TextField label="Name" value={name} disabled fullWidth />
             <TextField label="Title" value={title} onChange={(e) => setTitle(e.target.value)} fullWidth style={{ marginTop: '20px' }} />
+            <Select
+          value={grade}
+          onChange={handleGradeChange}
+          style={{marginTop:"20px"}}
+          >
+            <MenuItem value="g1">Grade 1</MenuItem>
+            <MenuItem value="g2">Grade 2</MenuItem>
+            <MenuItem value="g3">Grade 3</MenuItem>
+            <MenuItem value="g4">Grade 4</MenuItem>
+            <MenuItem value="g5">Grade 5</MenuItem>
+            <MenuItem value="g6">Grade 6</MenuItem>
+            <MenuItem value="g7">Grade 7</MenuItem>
+            <MenuItem value="g8">Grade 8</MenuItem>
+            <MenuItem value="g9">Grade 9</MenuItem>
+            <MenuItem value="g10">Grade 10</MenuItem>
+            <MenuItem value="g11">Grade 11</MenuItem>
+            <MenuItem value="g12">Grade 12</MenuItem>
+          </Select>
             <TextField label="Message" multiline rows={10} value={message} onChange={(e) => setMessage(e.target.value)} fullWidth style={{ marginTop: '20px' }} />
+            
             <Button variant="contained" style={{ backgroundColor: 'black', color: 'white', marginTop: '20px', width: '300px' }} onClick={handleSubmit}>
               Submit
             </Button>

@@ -51,7 +51,6 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
 function Parents() {
   const [newemail, setnewEmail] = useState("");
   const [emails, setEmails] = useState([]);
-  const grades = ["Grade 1", "Grade 2", "Grade 3"];
   const [grade, setGrade] = useState('g1');
 
 
