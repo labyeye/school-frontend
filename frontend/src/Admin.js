@@ -312,11 +312,9 @@ function SidebarMenu() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
   };
-
   const handleEmailChange = (event) => {
     setDeleteEmail(event.target.value);
   };
