@@ -280,7 +280,6 @@ function SidebarMenu() {
       if (!response.ok) {
         throw new Error("Failed to update notification status");
       }
-      window.location.reload();
     } catch (error) {
       console.error("Error updating notification status:", error);
     }
