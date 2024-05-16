@@ -346,6 +346,19 @@ function SidebarMenu() {
     }
   };
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "p":
+        return "grey";
+      case "a":
+        return "green";
+      case "r":
+        return "red";
+      default:
+        return "black";
+    }
+  };
+
   return (
 
     <div>
@@ -458,7 +471,7 @@ function SidebarMenu() {
       >
         {selectedSection === "dashboard" && (
           <div>
-            <h2>👋 Welcome !!</h2>
+            <h2>👋 Welcome  ! ! !</h2>
             <p style={{ color: "grey", fontSize: "20px" }}>Overview</p>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={3}>
@@ -562,7 +575,10 @@ function SidebarMenu() {
                     {notifications.map((notification, index) => (
                       <TableRow key={notification.id} style={{ backgroundColor: renderRowColor(index) }}>
                         <TableCell>
-                          <InputLabel id={`status-label-${notification.id}`} style={{ color: getStatusColor(notification.status) }}>
+                          <InputLabel
+                            id={`status-label-${notification.id}`}
+                            style={{ color: getStatusColor(notification.status) }}
+                          >
                             {getStatusText(notification.status)}
                           </InputLabel>
                           <Select
@@ -578,7 +594,6 @@ function SidebarMenu() {
                             }}
                             labelId={`status-label-${notification.id}`} // Associate Select with the label
                           >
-                            
                             <MenuItem value="p">Pending</MenuItem>
                             <MenuItem value="a">Approved</MenuItem>
                             <MenuItem value="r">Rejected</MenuItem>
@@ -590,6 +605,7 @@ function SidebarMenu() {
                         <TableCell>{notification.id}</TableCell>
                       </TableRow>
                     ))}
+
 
                   </TableBody>
                 </Table>
