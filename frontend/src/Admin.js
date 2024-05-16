@@ -72,7 +72,7 @@ function SidebarMenu() {
   const parentEmail = parentsData.parents;
   const [selectedSection, setSelectedSection] = useState("dashboard");
   const [notifications, setNotifications] = useState([]);
-  const [selectedStatus, setSelectedStatuses] = useState({});
+  // const [selectedStatus, setSelectedStatuses] = useState({});
 
 
   // NEW USER STATES
@@ -90,6 +90,9 @@ function SidebarMenu() {
   const [open, setOpen] = useState(false);
   // const [email, setEmail] = useState('');
   const [deleteemail, setDeleteEmail] = useState("");
+
+  const [selectedStatus, setSelectedStatus] = useState({});
+
 
   useEffect(() => {
     handleGetNotifications();
@@ -157,6 +160,24 @@ function SidebarMenu() {
   //   });
   // };
 
+  // const handleGetNotifications = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       "https://school-frontend-98qa.vercel.app/getnotifications"
+  //     );
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setNotifications(data);
+
+  //     } else {
+  //       console.error("Error fetching notifications:", response.statusText);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching notifications:", error);
+  //   }
+  // };
+
+
   const handleGetNotifications = async () => {
     try {
       const response = await fetch(
@@ -166,6 +187,12 @@ function SidebarMenu() {
         const data = await response.json();
         setNotifications(data);
 
+        // Populate selectedStatus state with the current status of notifications
+        const statuses = {};
+        data.forEach(notification => {
+          statuses[notification.id] = notification.status;
+        });
+        setSelectedStatus(statuses);
       } else {
         console.error("Error fetching notifications:", response.statusText);
       }
@@ -173,6 +200,7 @@ function SidebarMenu() {
       console.error("Error fetching notifications:", error);
     }
   };
+
 
   const fetchUsers = async () => {
     try {
@@ -190,11 +218,13 @@ function SidebarMenu() {
     }
   };
 
+
+
   const handleChange = async (event, notification) => {
     const newStatus = event.target.value;
-    setSelectedStatuses((prevState) => ({
-      ...prevState,
-      [notification.id]: newStatus,
+    setSelectedStatus(prevStatus => ({
+      ...prevStatus,
+      [notification.id]: newStatus
     }));
 
     if (newStatus === "a") {
@@ -259,7 +289,8 @@ function SidebarMenu() {
       }
     } catch (error) {
       console.error("Error creating user:", error);
-      toast.error("Some error occured")    }
+      toast.error("Some error occured")
+    }
   };
 
   const handleClickOpen = () => {
@@ -291,6 +322,20 @@ function SidebarMenu() {
       toast.error("Some error occured")
     }
   };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case "p":
+        return "Pending";
+      case "r":
+        return "Rejected";
+      case "a":
+        return "Approved";
+      default:
+        return "Unknown";
+    }
+  };
+  
   return (
 
     <div>
@@ -377,12 +422,12 @@ function SidebarMenu() {
             button
             component={Link}
             onClick={() => {
-              
+
               localStorage.removeItem("userType");
               localStorage.removeItem("name");
               localStorage.removeItem("email");
 
-      
+
               window.location.href = "/";
             }}
           >
@@ -512,9 +557,7 @@ function SidebarMenu() {
                         <TableCell>
                           <Select
                             value={selectedStatus[notification.id] || ""}
-                            onChange={(event) =>
-                              handleChange(event, notification)
-                            }
+                            onChange={(event) => handleChange(event, notification)}
                             style={{
                               color:
                                 selectedStatus[notification.id] === "p"
@@ -524,9 +567,9 @@ function SidebarMenu() {
                                     : "green",
                             }}
                           >
-                            <MenuItem value="p">Pending</MenuItem>
-                            <MenuItem value="a">Approve</MenuItem>
-                            <MenuItem value="r">Reject</MenuItem>
+                            <MenuItem value="p">{getStatusText("p")}</MenuItem>
+                            <MenuItem value="a">{getStatusText("a")}</MenuItem>
+                            <MenuItem value="r">{getStatusText("r")}</MenuItem>
                           </Select>
                         </TableCell>
                         <TableCell>{notification.title}</TableCell>
