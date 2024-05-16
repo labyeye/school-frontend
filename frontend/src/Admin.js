@@ -191,7 +191,7 @@ function SidebarMenu() {
         // Populate selectedStatus state with the current status of notifications
         const statuses = {};
         data.forEach(notification => {
-          statuses[notification.id] = notification.status;
+          statuses[notification.tick] = notification.status;
         });
         setSelectedStatus(statuses);
       } else {
@@ -206,7 +206,7 @@ function SidebarMenu() {
     // Assuming notifications contains the notifications array received from the API
     const initialSelectedStatus = {};
     notifications.forEach(notification => {
-      initialSelectedStatus[notification.id] = notification.status;
+      initialSelectedStatus[notification.tick] = notification.status;
     });
     setSelectedStatus(initialSelectedStatus);
   }, [notifications]);
@@ -234,7 +234,7 @@ function SidebarMenu() {
     const newStatus = event.target.value;
     setSelectedStatus(prevStatus => ({
       ...prevStatus,
-      [notification.id]: newStatus
+      [notification.tick]: newStatus
     }));
 
     if (newStatus === "a") {
@@ -573,26 +573,26 @@ function SidebarMenu() {
                   </TableHead>
                   <TableBody>
                     {notifications.map((notification, index) => (
-                      <TableRow key={notification.id} style={{ backgroundColor: renderRowColor(index) }}>
+                      <TableRow key={index} style={{ backgroundColor: renderRowColor(index) }}>
                         <TableCell>
                           <InputLabel
-                            id={`status-label-${notification.id}`}
-                            style={{ color: getStatusColor(notification.status) }}
+                            id={`status-label-${index}`}
+                            style={{ color: getStatusColor(notification.tick) }}
                           >
-                            {getStatusText(notification.status)}
+                            {getStatusText(notification.tick)}
                           </InputLabel>
                           <Select
-                            value={selectedStatus[notification.id] || ""}
+                            value={selectedStatus[index] || ""}
                             onChange={(event) => handleChange(event, notification)}
                             style={{
                               color:
-                                selectedStatus[notification.id] === "p"
+                                selectedStatus[index] === "p"
                                   ? "grey"
-                                  : selectedStatus[notification.id] === "r"
+                                  : selectedStatus[index] === "r"
                                     ? "red"
                                     : "green",
                             }}
-                            labelId={`status-label-${notification.id}`} // Associate Select with the label
+                            labelId={`status-label-${index}`} // Associate Select with the label
                           >
                             <MenuItem value="p">Pending</MenuItem>
                             <MenuItem value="a">Approved</MenuItem>
@@ -602,7 +602,7 @@ function SidebarMenu() {
                         <TableCell>{notification.title}</TableCell>
                         <TableCell>{notification.name}</TableCell>
                         <TableCell>{notification.message}</TableCell>
-                        <TableCell>{notification.id}</TableCell>
+                        <TableCell>{index}</TableCell>
                       </TableRow>
                     ))}
 
