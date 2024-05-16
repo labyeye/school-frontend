@@ -93,6 +93,8 @@ function SidebarMenu() {
 
   const [selectedStatus, setSelectedStatus] = useState({});
 
+  const [filteredEmails, setFilteredEmails] = useState([]);
+
 
 
   useEffect(() => {
@@ -111,30 +113,59 @@ function SidebarMenu() {
     }
   };
 
-  const sendEmailToParents = (title, message) => {
-    parentEmails.forEach((parentEmail) => {
+  // OLD 
+
+  // const sendEmailToParents = (title, message) => {
+  //   parentEmails.forEach((parentEmail) => {
+  //     const templateParams = {
+  //       title: title,
+  //       message: message,
+  //       tomail: parentEmail,
+  //     };
+
+  //     emailjs
+  //       .send(
+  //         "service_o0zvik4",
+  //         "template_rgo8jsb",
+  //         templateParams,
+  //         "crc_OthtMutwA5FNS"
+  //       )
+  //       .then((response) => {
+  //         console.log(`Email sent to ${parentEmail}:`, response);
+  //         toast.success("Emails successfully sent");
+  //       })
+  //       .catch((error) => {
+  //         console.error(`Error sending email to ${parentEmail}:`, error);
+  //       });
+  //   });
+  // };
+
+  // NEW
+  const sendEmailToParents = (title, message, emails) => {
+    emails.forEach((email) => {
       const templateParams = {
         title: title,
         message: message,
-        tomail: parentEmail,
+        tomail: email,
       };
 
-      emailjs
-        .send(
-          "service_o0zvik4",
-          "template_rgo8jsb",
-          templateParams,
-          "crc_OthtMutwA5FNS"
-        )
-        .then((response) => {
-          console.log(`Email sent to ${parentEmail}:`, response);
-          toast.success("Emails successfully sent");
-        })
-        .catch((error) => {
-          console.error(`Error sending email to ${parentEmail}:`, error);
-        });
+      // Send email to each filtered email
+      emailjs.send(
+        "service_o0zvik4",
+        "template_rgo8jsb",
+        templateParams,
+        "crc_OthtMutwA5FNS"
+      )
+      .then((response) => {
+        console.log(`Email sent to ${email}:`, response);
+        toast.success("Emails successfully sent");
+      })
+      .catch((error) => {
+        console.error(`Error sending email to ${email}:`, error);
+      });
     });
   };
+
 
   // const sendEmailToParents = (title, message, parentEmail) => {
   //   parentEmail.forEach((parentEmail) => {
@@ -257,12 +288,13 @@ function SidebarMenu() {
         const data = await response.json();
         console.log(data); // Log the response data to inspect its structure
         const filteredParentEmails = data.parentEmails.filter(email => email.grade === notification.grade);
+        setFilteredEmails(filteredParentEmails); // Store filtered emails in state
         sendEmailToParents(notification.title, notification.message, filteredParentEmails);
       } catch (error) {
-        toast.error("Email not sent");
-        console.log('Error fetching parent emails:', error);
+        console.error('Error fetching parent emails:', error);
       }
     }
+
 
 
     try {
