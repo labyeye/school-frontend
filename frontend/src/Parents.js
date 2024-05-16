@@ -109,9 +109,12 @@ function Parents() {
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <div>
-      <IconButton onClick={toggleDrawer} style={{ color: "black",float:'left' }}>
-        <MenuIcon />
-      </IconButton>
+        <IconButton
+          onClick={toggleDrawer}
+          style={{ color: "black", float: "left" }}
+        >
+          <MenuIcon />
+        </IconButton>
       </div>
       <StyledDrawer
         variant="temporary"
@@ -148,7 +151,7 @@ function Parents() {
         </List>
       </StyledDrawer>
 
-      <div style={{ width:'90%', marginLeft: "-90px",marginRight:"100px" }}>
+      <div style={{ width: "90%", marginLeft: "-90px", marginRight: "100px" }}>
         <form onSubmit={handleSubmit}>
           <h3 style={{ marginLeft: "100px" }}>Add emails ids below</h3>
           <TextField
