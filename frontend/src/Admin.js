@@ -94,6 +94,7 @@ function SidebarMenu() {
   const [selectedStatus, setSelectedStatus] = useState({});
 
 
+
   useEffect(() => {
     handleGetNotifications();
     fetchUsers();
@@ -200,6 +201,15 @@ function SidebarMenu() {
       console.error("Error fetching notifications:", error);
     }
   };
+
+  useEffect(() => {
+    // Assuming notifications contains the notifications array received from the API
+    const initialSelectedStatus = {};
+    notifications.forEach(notification => {
+      initialSelectedStatus[notification.id] = notification.status;
+    });
+    setSelectedStatus(initialSelectedStatus);
+  }, [notifications]);
 
 
   const fetchUsers = async () => {
@@ -335,7 +345,7 @@ function SidebarMenu() {
         return "Unknown";
     }
   };
-  
+
   return (
 
     <div>
@@ -448,7 +458,7 @@ function SidebarMenu() {
       >
         {selectedSection === "dashboard" && (
           <div>
-            <h2>👋 Welcome !</h2>
+            <h2>👋 Welcome</h2>
             <p style={{ color: "grey", fontSize: "20px" }}>Overview</p>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={3}>
@@ -567,9 +577,9 @@ function SidebarMenu() {
                                     : "green",
                             }}
                           >
-                            <MenuItem value="p">{getStatusText("p")}</MenuItem>
-                            <MenuItem value="a">{getStatusText("a")}</MenuItem>
-                            <MenuItem value="r">{getStatusText("r")}</MenuItem>
+                            <MenuItem value="p">Pending</MenuItem>
+                            <MenuItem value="a">Approved</MenuItem>
+                            <MenuItem value="r">Rejected</MenuItem>
                           </Select>
                         </TableCell>
                         <TableCell>{notification.title}</TableCell>
