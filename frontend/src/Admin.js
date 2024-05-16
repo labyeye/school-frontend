@@ -458,7 +458,7 @@ function SidebarMenu() {
       >
         {selectedSection === "dashboard" && (
           <div>
-            <h2>👋 Welcome</h2>
+            <h2>👋 Welcome !!</h2>
             <p style={{ color: "grey", fontSize: "20px" }}>Overview</p>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={3}>
@@ -560,11 +560,11 @@ function SidebarMenu() {
                   </TableHead>
                   <TableBody>
                     {notifications.map((notification, index) => (
-                      <TableRow
-                        key={notification.id}
-                        style={{ backgroundColor: renderRowColor(index) }}
-                      >
+                      <TableRow key={notification.id} style={{ backgroundColor: renderRowColor(index) }}>
                         <TableCell>
+                          <InputLabel id={`status-label-${notification.id}`} style={{ color: getStatusColor(notification.status) }}>
+                            {getStatusText(notification.status)}
+                          </InputLabel>
                           <Select
                             value={selectedStatus[notification.id] || ""}
                             onChange={(event) => handleChange(event, notification)}
@@ -576,6 +576,7 @@ function SidebarMenu() {
                                     ? "red"
                                     : "green",
                             }}
+                            labelId={`status-label-${notification.id}`} // Associate Select with the label
                           >
                             <MenuItem value="p">Pending</MenuItem>
                             <MenuItem value="a">Approved</MenuItem>
@@ -588,6 +589,7 @@ function SidebarMenu() {
                         <TableCell>{notification.id}</TableCell>
                       </TableRow>
                     ))}
+
                   </TableBody>
                 </Table>
               </TableContainer>
