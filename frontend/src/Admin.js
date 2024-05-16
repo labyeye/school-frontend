@@ -236,20 +236,36 @@ function SidebarMenu() {
       [notification.tick]: newStatus
     }));
   
+    // if (newStatus === "a") {
+    //   try {
+    //     // Fetch parent emails
+    //     const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemails'); 
+    //     const data = await response.json();
+    //     // Filter parent emails based on grade
+    //     const filteredParentEmails = data.parentEmails.filter(email => email.grade === notification.grade);
+    //     // Send email to filtered parent emails
+    //     sendEmailToParents(notification.title, notification.message, filteredParentEmails);
+    //   } catch (error) {
+    //     console.error('Error fetching parent emails:', error);
+    //   }
+    // }
+  
+
     if (newStatus === "a") {
       try {
-        // Fetch parent emails
-        const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemails'); 
+        const timestamp = new Date().getTime(); // Current timestamp for cache-busting
+        const url = `https://school-frontend-98qa.vercel.app/getparentemails?timestamp=${timestamp}`;
+        const response = await fetch(url); 
         const data = await response.json();
-        // Filter parent emails based on grade
         const filteredParentEmails = data.parentEmails.filter(email => email.grade === notification.grade);
-        // Send email to filtered parent emails
         sendEmailToParents(notification.title, notification.message, filteredParentEmails);
       } catch (error) {
+        toast.error("Email not sent");
         console.error('Error fetching parent emails:', error);
       }
     }
-  
+
+    
     try {
       // Update notification status
       const response = await fetch(
