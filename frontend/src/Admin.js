@@ -287,20 +287,25 @@ function SidebarMenu() {
         const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemails'); 
         const data = await response.json();
         console.log(data); 
-        if (data && data.parentEmails) {
+        if (Array.isArray(data)) {
           
-          const filteredParentEmails = data.parentEmails.filter(email => email.grade === notification.grade);
+          const filteredParentEmails = data.filter(item => item.grade === notification.grade);
           console.log(filteredParentEmails); 
-          console.log(notification.title, notification.message, filteredParentEmails,notification.grade, data.parentEmail.grade); // Log notification details
           
-          sendEmailToParents(notification.title, notification.message, filteredParentEmails);
+          const emails = filteredParentEmails.map(item => item.email);
+          console.log(emails); 
+         
+          sendEmailToParents(notification.title, notification.message, emails);
+          console.log(notification.title, notification.message, emails);
         } else {
+          toast.error('Invalid or missing data in API response')
           console.error('Invalid or missing data in API response');
         }
       } catch (error) {
         console.error('Error fetching parent emails:', error);
       }
     }
+  
 
 
 
