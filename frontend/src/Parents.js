@@ -196,6 +196,7 @@ function Parents() {
             <TableHead>
               <TableRow style={{ backgroundColor: "black" }}>
                 <TableCell style={{ color: "white" }}>Email id</TableCell>
+                <TableCell style={{ color: "white" }}>Grade</TableCell>
                 <TableCell style={{ color: "white" }}>Action</TableCell>
               </TableRow>
             </TableHead>
@@ -203,6 +204,7 @@ function Parents() {
               {emails.map((email) => (
                 <TableRow key={email.id}>
                   <TableCell>{email.email}</TableCell>
+                  <TableCell>{email.grade}</TableCell>
                   <TableCell>
                     <Button
                       variant="contained"
