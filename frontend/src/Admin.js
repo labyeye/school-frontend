@@ -253,19 +253,18 @@ function SidebarMenu() {
 
     if (newStatus === "a") {
       try {
-        const timestamp = new Date().getTime(); // Current timestamp for cache-busting
-        const url = `https://school-frontend-98qa.vercel.app/getparentemails?timestamp=${timestamp}`;
-        const response = await fetch(url); 
+        const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemails'); 
         const data = await response.json();
+        console.log(data); // Log the response data to inspect its structure
         const filteredParentEmails = data.parentEmails.filter(email => email.grade === notification.grade);
         sendEmailToParents(notification.title, notification.message, filteredParentEmails);
       } catch (error) {
         toast.error("Email not sent");
-        console.error('Error fetching parent emails:', error);
+        console.log('Error fetching parent emails:', error);
       }
     }
 
-    
+
     try {
       // Update notification status
       const response = await fetch(
@@ -281,7 +280,7 @@ function SidebarMenu() {
       if (!response.ok) {
         throw new Error("Failed to update notification status");
       }
-      window.reload();
+      window.location.reload();
     } catch (error) {
       console.error("Error updating notification status:", error);
     }
