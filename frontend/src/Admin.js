@@ -238,7 +238,7 @@ function SidebarMenu() {
   
     if (newStatus === "a") {
       try {
-        const response = await fetch("https://school-frontend-98qa.vercel.app/updatenotification/getparentemailslist");
+        const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemails');
         const data = await response.json();
         const filteredParentEmails = data.parentEmails.filter(email => email.grade === notification.grade);
         sendEmailToParents(notification.title, notification.message, filteredParentEmails);
