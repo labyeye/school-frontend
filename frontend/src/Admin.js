@@ -595,8 +595,8 @@ function SidebarMenu() {
                             labelId={`status-label-${index}`} // Associate Select with the label
                           >
                             <MenuItem value="p">Pending</MenuItem>
-                            <MenuItem value="a">Approved</MenuItem>
-                            <MenuItem value="r">Rejected</MenuItem>
+                            <MenuItem value="a">Approve</MenuItem>
+                            <MenuItem value="r">Reject</MenuItem>
                           </Select>
                         </TableCell>
                         <TableCell>{notification.title}</TableCell>
