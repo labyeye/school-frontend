@@ -104,22 +104,12 @@ function SidebarMenu() {
   const fetchParentEmails = async () => {
     try {
       const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemails');
-      if (response.ok) {
-        const data = await response.json();
-        // Make sure data has the expected structure
-        if (data && data.parentEmails) {
-          setParentEmails(data.parentEmails);
-        } else {
-          console.error('Parent emails data is missing or has unexpected structure');
-        }
-      } else {
-        console.error('Failed to fetch parent emails:', response.statusText);
-      }
+      const data = await response.json();
+      setParentEmails(data);
     } catch (error) {
       console.error('Error fetching parent emails:', error);
     }
   };
-  
 
   const sendEmailToParents = (title, message) => {
     parentEmails.forEach((parentEmail) => {
