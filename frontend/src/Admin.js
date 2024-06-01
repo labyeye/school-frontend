@@ -2,8 +2,14 @@ import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import InboxIcon from "@mui/icons-material/Inbox";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import ApprovalIcon from "@mui/icons-material/Approval";
 import SettingsIcon from "@mui/icons-material/Settings";
+import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 import { Link } from "react-router-dom";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
 import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
 import {
   Select,
@@ -12,6 +18,7 @@ import {
   TextField,
   Drawer,
   List,
+  Avatar,
   ListItem,
   ListItemIcon,
   ListItemText,
@@ -23,6 +30,8 @@ import {
   FormControl,
   InputLabel,
   IconButton,
+  Box,
+  Icon,
 } from "@mui/material";
 import {
   Table,
@@ -43,16 +52,16 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CheckIcon from "@mui/icons-material/Check";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 import MenuIcon from "@mui/icons-material/Menu";
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
-  width: 240,
+  width: 220,
   flexShrink: 0,
   "& .MuiDrawer-paper": {
-    width: 240,
-    backgroundColor: "#1e1e1e",
-    color: "#fff",
+    width: 220,
+    backgroundColor: "white",
+    color: "black",
     margin: "10px",
     borderRadius: "20px",
     padding: "10px",
@@ -74,7 +83,6 @@ function SidebarMenu() {
   const [notifications, setNotifications] = useState([]);
   // const [selectedStatus, setSelectedStatuses] = useState({});
 
-
   // NEW USER STATES
   const [newname, setnewName] = useState("");
   const [newemail, setnewEmail] = useState("");
@@ -82,8 +90,9 @@ function SidebarMenu() {
   const [newtype, setnewType] = useState("staff");
   const [users, setUsers] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
 
-  // PARENT EMAILS 
+  // PARENT EMAILS
   const [parentEmails, setParentEmails] = useState([]);
 
   // DELETE USER
@@ -95,7 +104,13 @@ function SidebarMenu() {
 
   const [filteredEmails, setFilteredEmails] = useState([]);
 
+  const handleProfileDrawerOpen = () => {
+    setIsProfileDrawerOpen(true);
+  };
 
+  const handleProfileDrawerClose = () => {
+    setIsProfileDrawerOpen(false);
+  };
 
   useEffect(() => {
     handleGetNotifications();
@@ -105,15 +120,17 @@ function SidebarMenu() {
 
   const fetchParentEmails = async () => {
     try {
-      const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemails');
+      const response = await fetch(
+        "https://school-frontend-98qa.vercel.app/getparentemails"
+      );
       const data = await response.json();
       setParentEmails(data);
     } catch (error) {
-      console.error('Error fetching parent emails:', error);
+      console.error("Error fetching parent emails:", error);
     }
   };
 
-  // OLD 
+  // OLD
 
   // const sendEmailToParents = (title, message) => {
   //   parentEmails.forEach((parentEmail) => {
@@ -150,22 +167,22 @@ function SidebarMenu() {
       };
 
       // Send email to each filtered email
-      emailjs.send(
-        "service_o0zvik4",
-        "template_rgo8jsb",
-        templateParams,
-        "crc_OthtMutwA5FNS"
-      )
-      .then((response) => {
-        console.log(`Email sent to ${email}:`, response);
-        toast.success("Emails successfully sent");
-      })
-      .catch((error) => {
-        console.error(`Error sending email to ${email}:`, error);
-      });
+      emailjs
+        .send(
+          "service_o0zvik4",
+          "template_rgo8jsb",
+          templateParams,
+          "crc_OthtMutwA5FNS"
+        )
+        .then((response) => {
+          console.log(`Email sent to ${email}:`, response);
+          toast.success("Emails successfully sent");
+        })
+        .catch((error) => {
+          console.error(`Error sending email to ${email}:`, error);
+        });
     });
   };
-
 
   // const sendEmailToParents = (title, message, parentEmail) => {
   //   parentEmail.forEach((parentEmail) => {
@@ -209,7 +226,6 @@ function SidebarMenu() {
   //   }
   // };
 
-
   const handleGetNotifications = async () => {
     try {
       const response = await fetch(
@@ -221,7 +237,7 @@ function SidebarMenu() {
 
         // Populate selectedStatus state with the current status of notifications
         const statuses = {};
-        data.forEach(notification => {
+        data.forEach((notification) => {
           statuses[notification.tick] = notification.status;
         });
         setSelectedStatus(statuses);
@@ -235,12 +251,11 @@ function SidebarMenu() {
 
   useEffect(() => {
     const initialSelectedStatus = {};
-    notifications.forEach(notification => {
+    notifications.forEach((notification) => {
       initialSelectedStatus[notification.tick] = notification.status;
     });
     setSelectedStatus(initialSelectedStatus);
   }, [notifications]);
-
 
   const fetchUsers = async () => {
     try {
@@ -258,19 +273,17 @@ function SidebarMenu() {
     }
   };
 
-
-
   const handleChange = async (event, notification) => {
     const newStatus = event.target.value;
-    setSelectedStatus(prevStatus => ({
+    setSelectedStatus((prevStatus) => ({
       ...prevStatus,
-      [notification.tick]: newStatus
+      [notification.tick]: newStatus,
     }));
-  
+
     // if (newStatus === "a") {
     //   try {
     //     // Fetch parent emails
-    //     const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemails'); 
+    //     const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemails');
     //     const data = await response.json();
     //     // Filter parent emails based on grade
     //     const filteredParentEmails = data.parentEmails.filter(email => email.grade === notification.grade);
@@ -280,37 +293,35 @@ function SidebarMenu() {
     //     console.error('Error fetching parent emails:', error);
     //   }
     // }
-  
 
     if (newStatus === "a") {
       try {
-        const response = await fetch('https://school-frontend-98qa.vercel.app/getparentemails'); 
+        const response = await fetch(
+          "https://school-frontend-98qa.vercel.app/getparentemails"
+        );
         const data = await response.json();
-        console.log(data); 
+        console.log(data);
         if (Array.isArray(data)) {
-          
-          const filteredParentEmails = data.filter(item => item.grade === notification.grade);
-          console.log(filteredParentEmails); 
-          
-          const emails = filteredParentEmails.map(item => item.email);
-          console.log(emails); 
-         
+          const filteredParentEmails = data.filter(
+            (item) => item.grade === notification.grade
+          );
+          console.log(filteredParentEmails);
+
+          const emails = filteredParentEmails.map((item) => item.email);
+          console.log(emails);
+
           sendEmailToParents(notification.title, notification.message, emails);
           console.log(notification.title, notification.message, emails);
         } else {
-          toast.error('Invalid or missing data in API response')
-          console.error('Invalid or missing data in API response');
+          toast.error("Invalid or missing data in API response");
+          console.error("Invalid or missing data in API response");
         }
       } catch (error) {
-        console.error('Error fetching parent emails:', error);
+        console.error("Error fetching parent emails:", error);
       }
     }
-  
-
-
 
     try {
-      
       const response = await fetch(
         `https://school-frontend-98qa.vercel.app/updatenotification/${notification.id}`,
         {
@@ -328,9 +339,6 @@ function SidebarMenu() {
       console.error("Error updating notification status:", error);
     }
   };
-  
-  
-  
 
   const renderRowColor = (index) => {
     return index % 2 === 0 ? "white" : "#f2f2f2";
@@ -358,17 +366,17 @@ function SidebarMenu() {
       if (response.ok) {
         const data = await response.json();
         console.log("User created successfully:", data);
-        toast.success("User created")
+        toast.success("User created");
         window.location.reload();
       } else {
-        toast.error("Some error occured")
+        toast.error("Some error occured");
         const errorData = await response.json();
         console.error("Failed to create user:", errorData.error);
         alert(errorData.error);
       }
     } catch (error) {
       console.error("Error creating user:", error);
-      toast.error("Some error occured")
+      toast.error("Some error occured");
     }
   };
 
@@ -384,19 +392,19 @@ function SidebarMenu() {
 
   const handleDeleteSubmit = async () => {
     try {
-      toast.loading('Deleting...');
+      toast.loading("Deleting...");
       await fetch("https://school-frontend-98qa.vercel.app/deleteuser", {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email: deleteemail }), // Sending an object with email property
       });
       toast.dismiss();
     } catch (error) {
       toast.dismiss();
-      console.error('Error deleting user:', error);
-      toast.error("Some error occured")
+      console.error("Error deleting user:", error);
+      toast.error("Some error occured");
     }
   };
 
@@ -425,30 +433,48 @@ function SidebarMenu() {
         return "black";
     }
   };
-
+  const ProfileCircle = styled(Avatar)(({ theme }) => ({
+    width: 30,
+    height:30,
+  flexShrink: 0,
+  "& .MuiDrawer-paper": {
+    width: 220,
+    backgroundColor: "#1e1e1e",
+    height:10,
+    color: "#fff",
+    margin: "0px",
+    borderRadius: "20px",
+    padding: "10px",
+    position: "fixed", // Add this line to fix the position of the drawer
+  },
+    
+  }));
+  
   return (
-
     <div>
-      <div style={{ display: "flex" }}>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-          edge="start"
-        >
-          {isDrawerOpen ? <CloseIcon /> : <MenuIcon />}
-        </IconButton>
-        <Typography variant="h6" noWrap style={{ marginTop: "6px" }}>
-          Admin Dashboard
-        </Typography>
+      
+      <div style={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+        
+      <div style={{ display: "flex",justifyContent:'space-between'}}>
+        
+      </div>
+      <div>
+        
+      <ProfileCircle onClick={handleProfileDrawerOpen}>
+          <AccountCircleIcon style={{height:'40px',
+    width:'50px',}}/>
+        </ProfileCircle>
+      </div>
+
       </div>
       <StyledDrawer
-        variant="temporary"
-        anchor="left"
+        variant="permanent"
+        
         open={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+       
       >
         <List>
+          
           <ListItem
             button
             component={Link}
@@ -456,14 +482,15 @@ function SidebarMenu() {
               setSelectedSection("dashboard");
               setIsDrawerOpen(!isDrawerOpen);
             }}
+            style={{ backgroundColor: selectedSection === "dashboard" ? "#DADADA" : "transparent",borderRadius:9,marginTop:20 }}
           >
             <ListItemIcon>
-              <DashboardIcon style={{ color: "#fff" }} />
+              <DashboardIcon style={{ color: "black" }} />
             </ListItemIcon>
-            <StyledListItemText primary="Dashboard" />
-          </ListItem>
+            <StyledListItemText primary="Dashboard" style={{color:'black'}}/>
+        </ListItem>
 
-          <StyledDivider />
+  
           <ListItem
             button
             component={Link}
@@ -471,11 +498,12 @@ function SidebarMenu() {
               setSelectedSection("inbox");
               setIsDrawerOpen(!isDrawerOpen);
             }}
+            style={{ backgroundColor: selectedSection === "inbox" ? "#DADADA" : "transparent",borderRadius:9  }}
           >
             <ListItemIcon>
-              <InboxIcon style={{ color: "#fff" }} />
+              <InboxIcon style={{ color: "black" }} />
             </ListItemIcon>
-            <StyledListItemText primary="Inbox" />
+            <StyledListItemText primary="Inbox" style={{color:'black'}}/>
           </ListItem>
 
           <ListItem
@@ -485,14 +513,15 @@ function SidebarMenu() {
               setSelectedSection("add");
               setIsDrawerOpen(!isDrawerOpen);
             }}
+            style={{ backgroundColor: selectedSection === "add" ? "#DADADA" : "transparent",borderRadius:9  }}
           >
             <ListItemIcon>
-              <GroupAddOutlinedIcon style={{ color: "#fff" }} />
+              <GroupAddOutlinedIcon style={{ color: "black" }} />
             </ListItemIcon>
-            <StyledListItemText primary="Add Staff" />
+            <StyledListItemText primary="Add Staff" style={{color:'black'}} />
           </ListItem>
 
-          <StyledDivider />
+  
           <ListItem
             button
             component={Link}
@@ -500,23 +529,60 @@ function SidebarMenu() {
               setSelectedSection("settings");
               setIsDrawerOpen(!isDrawerOpen);
             }}
+            style={{ backgroundColor: selectedSection === "settings" ? "#DADADA" : "transparent",borderRadius:9 }}
           >
             <ListItemIcon>
-              <SettingsIcon style={{ color: "#fff" }} />
+              <SettingsIcon style={{ color: "black" }} />
             </ListItemIcon>
-            <StyledListItemText primary="Settings" />
+            <StyledListItemText primary="Settings" style={{color:'black'}}/>
           </ListItem>
 
-          <StyledDivider />
+    
           <ListItem
             button
             component={Link}
             onClick={() => {
-
               localStorage.removeItem("userType");
               localStorage.removeItem("name");
               localStorage.removeItem("email");
 
+              window.location.href = "/";
+            }}
+          >
+            <ListItemIcon>
+              <InboxIcon style={{ color: "red" }} />
+            </ListItemIcon>
+            <StyledListItemText style={{ color: "red" }} primary="Logout" />
+          </ListItem>
+        </List>
+      </StyledDrawer>
+      <StyledDrawer
+        variant="temporary"
+        anchor="right"
+        open={isProfileDrawerOpen}
+        onClose={handleProfileDrawerClose}
+      >
+        <List>
+          <ListItem button onClick={() => console.log("Go to Profile")}>
+            <ListItemIcon>
+              <AccountCircleIcon />
+            </ListItemIcon>
+            <ListItemText primary="Profile" />
+          </ListItem>
+          <ListItem button onClick={() => console.log("Go to Settings")}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Settings" />
+          </ListItem>
+          <Divider />
+          <ListItem
+            button
+            component={Link}
+            onClick={() => {
+              localStorage.removeItem("userType");
+              localStorage.removeItem("name");
+              localStorage.removeItem("email");
 
               window.location.href = "/";
             }}
@@ -531,88 +597,165 @@ function SidebarMenu() {
 
       <div
         style={{
-          marginLeft: isDrawerOpen ? "20px" : "0",
-          marginTop: "50px",
+          marginLeft:"300px",
+          marginTop: "-40px",
           marginRight: "20px",
         }}
       >
         {selectedSection === "dashboard" && (
           <div>
-            <h2>👋 Welcome!! ! !!</h2>
+            <h2>👋 Welcome</h2>
+            
             <p style={{ color: "grey", fontSize: "20px" }}>Overview</p>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={3}>
+            <Grid container spacing={10} style={{ marginTop: "20px" }}>
+              <Grid item xs={1} sm={3}>
                 <Card
                   variant="outlined"
-                  sx={{ backgroundColor: "#2196F3" }}
+                  sx={{ backgroundColor: "#A0E9FF", maxWidth: "270px" ,boxShadow: "0px 0px 10px rgba(69, 187, 223, 10)"}}
                   style={{ borderRadius: "12px" }}
                 >
-                  <CardContent>
-                    <Typography variant="h5" color="white" gutterBottom>
-                      Total Notifications
-                    </Typography>
-                    <Typography variant="h4" color="white">
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <NotificationsIcon
+                      style={{
+                        height: "60px",
+                        width: "60px",
+                        color: "#0C356A",
+                      }}
+                    />
+
+                    <Typography variant="h4" color="#0C356A">
                       {notifications.length}
+                    </Typography>
+                    <Typography
+                      variant="h16"
+                      color="#0C356A"
+                      fontWeight={1000}
+                      gutterBottom
+                    >
+                      Total Notifications
                     </Typography>
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} sm={3}>
+              <Grid item xs={15} sm={3}>
                 <Card
                   variant="outlined"
-                  sx={{ backgroundColor: "#4CAF50" }}
+                  sx={{ backgroundColor: "#BFF6C3", maxWidth: "270px" ,boxShadow: "0px 0px 10px rgba(21, 167, 32, 10)"}}
                   style={{ borderRadius: "12px" }}
                 >
-                  <CardContent>
-                    <Typography variant="h5" color="white" gutterBottom>
-                      Total Approvals
-                    </Typography>
-                    <Typography variant="h4" color="white">
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <ApprovalIcon
+                      style={{
+                        height: "60px",
+                        width: "60px",
+                        color: "#1A4D2E",
+                      }}
+                    />
+
+                    <Typography variant="h4" color="#1A4D2E">
                       {
                         notifications.filter(
                           (notification) => notification.tick === "a"
                         ).length
                       }
                     </Typography>
+                    <Typography
+                      variant="h16"
+                      color="#1A4D2E"
+                      fontWeight={1000}
+                      gutterBottom
+                    >
+                      Total Approvals
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
               <Grid item xs={12} sm={3}>
                 <Card
                   variant="outlined"
-                  sx={{ backgroundColor: "#F44336" }}
+                  sx={{ backgroundColor: "#FEFFD2", maxWidth: "270px" ,boxShadow: "0px 0px 10px rgba(240, 245, 0, 10)"}}
                   style={{ borderRadius: "12px" }}
                 >
-                  <CardContent>
-                    <Typography variant="h5" color="white" gutterBottom>
-                      Total Rejections
-                    </Typography>
-                    <Typography variant="h4" color="white">
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <SpeakerNotesOffIcon
+                      style={{
+                        height: "60px",
+                        width: "60px",
+                        color: "#FEB941",
+                      }}
+                    />
+
+                    <Typography variant="h4" color="#FEB941">
                       {
                         notifications.filter(
                           (notification) => notification.tick === "r"
                         ).length
                       }
                     </Typography>
+                    <Typography
+                      variant="h16"
+                      color="#FEB941"
+                      fontWeight={1000}
+                      gutterBottom
+                    >
+                      Total Rejections
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
               <Grid item xs={12} sm={3}>
                 <Card
                   variant="outlined"
-                  sx={{ backgroundColor: "silver" }}
+                  sx={{ backgroundColor: "#FFA27F", maxWidth: "270px" ,boxShadow: "0px 0px 10px rgba(255, 70, 0, 10)"}}
                   style={{ borderRadius: "12px" }}
                 >
-                  <CardContent>
-                    <Typography variant="h5" color="white" gutterBottom>
-                      Pending Approval
-                    </Typography>
-                    <Typography variant="h4" color="white">
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                    }}
+                  >
+                    <PendingActionsIcon
+                      style={{
+                        height: "60px",
+                        width: "60px",
+                        color: "#C40C0C",
+                      }}
+                    />
+
+                    <Typography variant="h4" color="#C40C0C">
                       {
                         notifications.filter(
                           (notification) => notification.tick === "p"
                         ).length
                       }
+                    </Typography>
+                    <Typography
+                      variant="h16"
+                      color="#C40C0C"
+                      fontWeight={1000}
+                      gutterBottom
+                    >
+                      Pending Approval
                     </Typography>
                   </CardContent>
                 </Card>
@@ -639,7 +782,10 @@ function SidebarMenu() {
                   </TableHead>
                   <TableBody>
                     {notifications.map((notification, index) => (
-                      <TableRow key={index} style={{ backgroundColor: renderRowColor(index) }}>
+                      <TableRow
+                        key={index}
+                        style={{ backgroundColor: renderRowColor(index) }}
+                      >
                         <TableCell>
                           <InputLabel
                             id={`status-label-${index}`}
@@ -649,14 +795,16 @@ function SidebarMenu() {
                           </InputLabel>
                           <Select
                             value={selectedStatus[index] || ""}
-                            onChange={(event) => handleChange(event, notification)}
+                            onChange={(event) =>
+                              handleChange(event, notification)
+                            }
                             style={{
                               color:
                                 selectedStatus[index] === "p"
                                   ? "grey"
                                   : selectedStatus[index] === "r"
-                                    ? "red"
-                                    : "green",
+                                  ? "red"
+                                  : "green",
                             }}
                             labelId={`status-label-${index}`} // Associate Select with the label
                           >
@@ -671,8 +819,6 @@ function SidebarMenu() {
                         <TableCell>{index}</TableCell>
                       </TableRow>
                     ))}
-
-
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -815,7 +961,6 @@ function SidebarMenu() {
       </div>
       <Toaster />
     </div>
-
   );
 }
 
