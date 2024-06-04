@@ -56,38 +56,38 @@ const Login = () => {
             });
     };
 
-    const paperStyle = { padding: 20, margin: "100px auto", maxWidth: 380,borderRadius: 25};
+    const paperStyle = { padding: 20, margin: "100px auto", maxWidth: 380,borderRadius: 12};
     const avatarStyle = { backgroundColor: '#1bbd7e' };
-    const btnstyle = { margin: '8px 0' };
+    const btnstyle = { margin: '8px 0',color: 'white', backgroundColor: 'black',borderRadius:'12px',height:'40px'};
 
     const isMobile = useMediaQuery('(max-width:600px)');
 
     return (
-        <Grid container justifyContent="center" >
+<Grid container justifyContent="center" >
             <Grid item xs={12} sm={10} md={8} lg={6}>
-                <Paper elevation={10} style={paperStyle} >
+                <Paper elevation={0} style={paperStyle} >
                     <form onSubmit={handleSubmit}>
                         <Grid container justifyContent="center" alignItems="center" spacing={2}>
-                            <Grid item>
+                            {/* <Grid item>
                                 <Avatar style={avatarStyle}><LockOutlinedIcon /></Avatar>
-                            </Grid>
+                            </Grid> */}
                             <Grid item xs={12}>
                                 <Typography variant="h5" align="center">Sign In</Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField label='Email' placeholder='Enter Email' variant="outlined" fullWidth required value={email} onChange={handleEmailChange} />
+                                <TextField label='Email' placeholder='Enter Email' variant="outlined" style={{}} fullWidth required value={email} onChange={handleEmailChange} />
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField label='Password' placeholder='Enter password' type='password' variant="outlined" fullWidth required value={password} onChange={handlePasswordChange} />
                             </Grid>
                             <Grid item xs={12}>
-                                <FormControlLabel
+                                {/* <FormControlLabel
                                     control={<Checkbox name="checkedB" color="primary" />}
                                     label="Remember me"
-                                />
+                                /> */}
                             </Grid>
                             <Grid item xs={12}>
-                                <Button type='submit' color='primary' variant="contained" fullWidth style={btnstyle}>Sign in</Button>
+                                <Button type='submit' variant="contained" fullWidth style={btnstyle}>Sign in</Button>
                             </Grid>
                         </Grid>
                     </form>

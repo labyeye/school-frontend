@@ -115,8 +115,6 @@ app.get('/getparentemails', async (req, res) => {
   }
 });
 
-
-
 app.get('/getnotifications', async (req, res) => {
     try {
         const snapshot = await db.collection('notifications').get();
@@ -133,7 +131,6 @@ app.get('/getnotifications', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch notifications' });
     }
 });
-
 
 app.put('/updatenotification/:id', async (req, res) => {
     try {

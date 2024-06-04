@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import DashboardIconSVG from "./Icons/ic_analytics.svg";
+import InboxSVG from "./Icons/ic_mail.svg";
+import UsersSVG from "./Icons/ic_user.svg";
+import LogoutSVG from "./Icons/ic_lock.svg";
 import InboxIcon from "@mui/icons-material/Inbox";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ApprovalIcon from "@mui/icons-material/Approval";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
+
+import ErrorIconPNG from "./Icons/error.png";
+import PendingPNG from "./Icons/pending.png";
+import CheckPNG from "./Icons/check.png";
+import NotificationPNG from "./Icons/notification.png";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -55,17 +66,28 @@ import CheckIcon from "@mui/icons-material/Check";
 import toast, { Toaster } from "react-hot-toast";
 import MenuIcon from "@mui/icons-material/Menu";
 
+import "./admin.css";
+
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   width: 220,
   flexShrink: 0,
   "& .MuiDrawer-paper": {
-    width: 220,
-    backgroundColor: "white",
+    width: 200,
+    backgroundColor: "rgb(249, 250, 251)",
     color: "black",
     margin: "10px",
+    marginTop: "-20px",
+    marginLeft: "-20px",
     borderRadius: "20px",
-    padding: "10px",
-    position: "fixed", // Add this line to fix the position of the drawer
+    paddingTop: "40px",
+    padding: "40px",
+    position: "fixed",
+    border: "1px dashed #e3e3e3",
+    [theme.breakpoints.down("sm")]: {
+      margin: 0,
+      borderRadius: 0,
+      width: '100%',
+    },
   },
 }));
 
@@ -78,6 +100,13 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
 }));
 
 function SidebarMenu() {
+  const theme = useTheme();
+
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMediumScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
+
+
   const parentEmail = parentsData.parents;
   const [selectedSection, setSelectedSection] = useState("dashboard");
   const [notifications, setNotifications] = useState([]);
@@ -90,7 +119,7 @@ function SidebarMenu() {
   const [newtype, setnewType] = useState("staff");
   const [users, setUsers] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
+  // const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
 
   // PARENT EMAILS
   const [parentEmails, setParentEmails] = useState([]);
@@ -104,19 +133,13 @@ function SidebarMenu() {
 
   const [filteredEmails, setFilteredEmails] = useState([]);
 
-  const handleProfileDrawerOpen = () => {
-    setIsProfileDrawerOpen(true);
-  };
-
-  const handleProfileDrawerClose = () => {
-    setIsProfileDrawerOpen(false);
-  };
-
   useEffect(() => {
     handleGetNotifications();
     fetchUsers();
     fetchParentEmails();
   }, []);
+
+  
 
   const fetchParentEmails = async () => {
     try {
@@ -129,33 +152,6 @@ function SidebarMenu() {
       console.error("Error fetching parent emails:", error);
     }
   };
-
-  // OLD
-
-  // const sendEmailToParents = (title, message) => {
-  //   parentEmails.forEach((parentEmail) => {
-  //     const templateParams = {
-  //       title: title,
-  //       message: message,
-  //       tomail: parentEmail,
-  //     };
-
-  //     emailjs
-  //       .send(
-  //         "service_o0zvik4",
-  //         "template_rgo8jsb",
-  //         templateParams,
-  //         "crc_OthtMutwA5FNS"
-  //       )
-  //       .then((response) => {
-  //         console.log(`Email sent to ${parentEmail}:`, response);
-  //         toast.success("Emails successfully sent");
-  //       })
-  //       .catch((error) => {
-  //         console.error(`Error sending email to ${parentEmail}:`, error);
-  //       });
-  //   });
-  // };
 
   // NEW
   const sendEmailToParents = (title, message, emails) => {
@@ -184,47 +180,27 @@ function SidebarMenu() {
     });
   };
 
-  // const sendEmailToParents = (title, message, parentEmail) => {
-  //   parentEmail.forEach((parentEmail) => {
-  //     const templateParams = {
-  //       title: title,
-  //       message: message,
-  //       tomail: parentEmail,
-  //     };
+  //DRAWER
+  useEffect(() => {
+    const handleResize = () => {
+      if (isSmallScreen) {
+        setIsDrawerOpen(false);
+      }
+    };
 
-  //     emailjs
-  //       .send(
-  //         "service_o0zvik4",
-  //         "template_rgo8jsb",
-  //         templateParams,
-  //         "crc_OthtMutwA5FNS"
-  //       )
-  //       .then((response) => {
-  //         console.log(`Email sent to ${parentEmail}:`, response);
-  //         toast.success("Emails successfully send")
-  //       })
-  //       .catch((error) => {
-  //         console.error(`Error sending email to ${parentEmail}:`, error);
-  //       });
-  //   });
-  // };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isSmallScreen]);
 
-  // const handleGetNotifications = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       "https://school-frontend-98qa.vercel.app/getnotifications"
-  //     );
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setNotifications(data);
+  const handleDrawerOpen = () => {
+    setIsDrawerOpen(true);
+  };
 
-  //     } else {
-  //       console.error("Error fetching notifications:", response.statusText);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching notifications:", error);
-  //   }
-  // };
+  const handleDrawerClose = () => {
+    setIsDrawerOpen(false);
+  };
+
+
 
   const handleGetNotifications = async () => {
     try {
@@ -434,47 +410,76 @@ function SidebarMenu() {
     }
   };
   const ProfileCircle = styled(Avatar)(({ theme }) => ({
-    width: 30,
-    height:30,
-  flexShrink: 0,
-  "& .MuiDrawer-paper": {
-    width: 220,
-    backgroundColor: "#1e1e1e",
-    height:10,
-    color: "#fff",
-    margin: "0px",
-    borderRadius: "20px",
-    padding: "10px",
-    position: "fixed", // Add this line to fix the position of the drawer
-  },
-    
+    width: 40,
+    height: 40,
+    flexShrink: 0,
+    "& .MuiDrawer-paper": {
+      width: 220,
+      backgroundColor: "#1e1e1e",
+      height: 10,
+      color: "#fff",
+      margin: "0px",
+      borderRadius: "20px",
+      padding: "0px",
+      position: "fixed",
+    },
+    "@media (max-width: 768px)": {
+      width: 30,
+      height: 30,
+      marginTop: "-40px",
+    },
   }));
+
+  const ResponsiveIcon = styled(AccountCircleIcon)`
+    height: 60px;
+    width: 50px;
+
+    @media (max-width: 768px) {
+      height: 40px;
+      width: 40px;
+    }
+  `;
+
   
+  const getSpacing = () => {
+    if (isSmallScreen) return 3;
+    if (isLargeScreen) return 8;
+    return 3; 
+  };
+
   return (
     <div>
-      
-      <div style={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
-        
-      <div style={{ display: "flex",justifyContent:'space-between'}}>
-        
-      </div>
-      <div>
-        
-      <ProfileCircle onClick={handleProfileDrawerOpen}>
-          <AccountCircleIcon style={{height:'40px',
-    width:'50px',}}/>
-        </ProfileCircle>
-      </div>
-
+      {isSmallScreen && (
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          onClick={handleDrawerOpen}
+          edge="start"
+          sx={{ mr: 2, display: { xs: 'block', md: 'none' } }}
+        >
+          <MenuIcon />
+        </IconButton>
+      )}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between" }}></div>
+        <div>
+          <ProfileCircle>
+            <ResponsiveIcon />
+          </ProfileCircle>
+        </div>
       </div>
       <StyledDrawer
-        variant="permanent"
-        
+        variant={isSmallScreen ? 'temporary' : 'permanent'}
         open={isDrawerOpen}
-       
+        onClose={handleDrawerClose}
       >
         <List>
-          
           <ListItem
             button
             component={Link}
@@ -482,15 +487,20 @@ function SidebarMenu() {
               setSelectedSection("dashboard");
               setIsDrawerOpen(!isDrawerOpen);
             }}
-            style={{ backgroundColor: selectedSection === "dashboard" ? "#DADADA" : "transparent",borderRadius:9,marginTop:20 }}
+            style={{
+              backgroundColor:
+                selectedSection === "dashboard" ? "#DADADA" : "transparent",
+              borderRadius: 9,
+              marginTop: 20,
+            }}
           >
             <ListItemIcon>
-              <DashboardIcon style={{ color: "black" }} />
+              {/* <DashboardIcon style={{ color: "black" }} /> */}
+              <img src={DashboardIconSVG} />
             </ListItemIcon>
-            <StyledListItemText primary="Dashboard" style={{color:'black'}}/>
-        </ListItem>
+            <StyledListItemText primary="Dashboard" style={{ color: "grey" }} />
+          </ListItem>
 
-  
           <ListItem
             button
             component={Link}
@@ -498,12 +508,17 @@ function SidebarMenu() {
               setSelectedSection("inbox");
               setIsDrawerOpen(!isDrawerOpen);
             }}
-            style={{ backgroundColor: selectedSection === "inbox" ? "#DADADA" : "transparent",borderRadius:9  }}
+            style={{
+              backgroundColor:
+                selectedSection === "inbox" ? "#DADADA" : "transparent",
+              borderRadius: 9,
+            }}
           >
             <ListItemIcon>
-              <InboxIcon style={{ color: "black" }} />
+              {/* <InboxIcon style={{ color: "black" }} /> */}
+              <img src={InboxSVG} alt="" />
             </ListItemIcon>
-            <StyledListItemText primary="Inbox" style={{color:'black'}}/>
+            <StyledListItemText primary="Inbox" style={{ color: "grey" }} />
           </ListItem>
 
           <ListItem
@@ -513,31 +528,33 @@ function SidebarMenu() {
               setSelectedSection("add");
               setIsDrawerOpen(!isDrawerOpen);
             }}
-            style={{ backgroundColor: selectedSection === "add" ? "#DADADA" : "transparent",borderRadius:9  }}
+            style={{
+              backgroundColor:
+                selectedSection === "add" ? "#DADADA" : "transparent",
+              borderRadius: 9,
+            }}
           >
             <ListItemIcon>
-              <GroupAddOutlinedIcon style={{ color: "black" }} />
+              <img src={UsersSVG} />
             </ListItemIcon>
-            <StyledListItemText primary="Add Staff" style={{color:'black'}} />
+            <StyledListItemText primary="Add Staff" style={{ color: "grey" }} />
           </ListItem>
 
-  
-          <ListItem
+          {/* <ListItem
             button
             component={Link}
             onClick={() => {
               setSelectedSection("settings");
               setIsDrawerOpen(!isDrawerOpen);
             }}
-            style={{ backgroundColor: selectedSection === "settings" ? "#DADADA" : "transparent",borderRadius:9 }}
+            style={{ backgroundColor: selectedSection === "settings" ? "#DADADA" : "transparent", borderRadius: 9 }}
           >
             <ListItemIcon>
               <SettingsIcon style={{ color: "black" }} />
             </ListItemIcon>
-            <StyledListItemText primary="Settings" style={{color:'black'}}/>
-          </ListItem>
+            <StyledListItemText primary="Settings" style={{ color: 'black' }} />
+          </ListItem> */}
 
-    
           <ListItem
             button
             component={Link}
@@ -550,22 +567,24 @@ function SidebarMenu() {
             }}
           >
             <ListItemIcon>
-              <InboxIcon style={{ color: "red" }} />
+              {/* <InboxIcon style={{ color: "red" }} /> */}
+              <img src={LogoutSVG} alt="" />
             </ListItemIcon>
-            <StyledListItemText style={{ color: "red" }} primary="Logout" />
+            <StyledListItemText style={{ color: "grey" }} primary="Logout" />
           </ListItem>
         </List>
       </StyledDrawer>
       <StyledDrawer
         variant="temporary"
         anchor="right"
-        open={isProfileDrawerOpen}
-        onClose={handleProfileDrawerClose}
+        // open={isProfileDrawerOpen}
+        // onClose={handleProfileDrawerClose}
       >
         <List>
           <ListItem button onClick={() => console.log("Go to Profile")}>
             <ListItemIcon>
-              <AccountCircleIcon />
+              {/* <AccountCircleIcon /> */}
+              <img src={UsersSVG} alt="" />
             </ListItemIcon>
             <ListItemText primary="Profile" />
           </ListItem>
@@ -588,7 +607,8 @@ function SidebarMenu() {
             }}
           >
             <ListItemIcon>
-              <InboxIcon style={{ color: "red" }} />
+              {/* <InboxIcon style={{ color: "red" }} /> */}
+              <img src={InboxSVG} alt="" />
             </ListItemIcon>
             <StyledListItemText style={{ color: "red" }} primary="Logout" />
           </ListItem>
@@ -596,167 +616,213 @@ function SidebarMenu() {
       </StyledDrawer>
 
       <div
-        style={{
-          marginLeft:"300px",
-          marginTop: "-40px",
-          marginRight: "20px",
-        }}
+        class="responsive-margin"
+        // style={{
+        //   marginLeft: "300px",
+        //   marginTop: "-40px",
+        //   marginRight: "20px",
+        // }}
       >
         {selectedSection === "dashboard" && (
-          <div>
-            <h2>👋 Welcome</h2>
-            
+          <div style={{ marginTop: "40px" }}>
+            <h2>Hi, Welcome back 👋</h2>
+
             <p style={{ color: "grey", fontSize: "20px" }}>Overview</p>
-            <Grid container spacing={10} style={{ marginTop: "20px" }}>
-              <Grid item xs={1} sm={3}>
+            <Grid container spacing={getSpacing()} style={{ marginTop: "-30px" }}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Card
                   variant="outlined"
-                  sx={{ backgroundColor: "#A0E9FF", maxWidth: "270px" ,boxShadow: "0px 0px 10px rgba(69, 187, 223, 10)"}}
-                  style={{ borderRadius: "12px" }}
+                  sx={{
+                    backgroundColor: "white",
+                    maxWidth: "270px",
+                    border: "1px solid #eee",
+                    boxShadow:
+                      "rgba(145, 158, 171, 0.08) 0px 0px 2px 0px, rgba(145, 158, 171, 0.08) 0px 12px 24px -4px",
+                    borderRadius: "12px",
+                    padding: "10px",
+                    height: "110px",
+                    width: "270px",
+                  }}
                 >
                   <CardContent
                     sx={{
                       display: "flex",
-                      flexDirection: "column",
                       alignItems: "center",
                     }}
                   >
-                    <NotificationsIcon
-                      style={{
-                        height: "60px",
-                        width: "60px",
-                        color: "#0C356A",
-                      }}
+                    <img
+                      src={NotificationPNG}
+                      height="60px"
+                      style={{ marginRight: "16px" }}
                     />
 
-                    <Typography variant="h4" color="#0C356A">
-                      {notifications.length}
-                    </Typography>
-                    <Typography
-                      variant="h16"
-                      color="#0C356A"
-                      fontWeight={1000}
-                      gutterBottom
-                    >
-                      Total Notifications
-                    </Typography>
+                    <div style={{ flex: 1 }}>
+                      <Typography
+                        variant="h4"
+                        color="#0C356A"
+                        sx={{ textAlign: "center" }}
+                      >
+                        {notifications.length}
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        color="#0C356A"
+                        fontWeight={500}
+                        fontSize={17}
+                        sx={{ textAlign: "center" }}
+                      >
+                        Total Notifications
+                      </Typography>
+                    </div>
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={15} sm={3}>
+
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Card
                   variant="outlined"
-                  sx={{ backgroundColor: "#BFF6C3", maxWidth: "270px" ,boxShadow: "0px 0px 10px rgba(21, 167, 32, 10)"}}
-                  style={{ borderRadius: "12px" }}
+                  sx={{
+                    backgroundColor: "white",
+                    maxWidth: "270px",
+                    border: "1px solid #eee",
+                    boxShadow:
+                      "rgba(145, 158, 171, 0.08) 0px 0px 2px 0px, rgba(145, 158, 171, 0.08) 0px 12px 24px -4px",
+                    borderRadius: "12px",
+                    padding: "10px",
+                    height: "110px",
+                    width: "270px",
+                  }}
                 >
                   <CardContent
                     sx={{
                       display: "flex",
-                      flexDirection: "column",
                       alignItems: "center",
                     }}
                   >
-                    <ApprovalIcon
-                      style={{
-                        height: "60px",
-                        width: "60px",
-                        color: "#1A4D2E",
-                      }}
+                    <img
+                      src={CheckPNG}
+                      height="60px"
+                      style={{ marginRight: "16px" }}
                     />
 
-                    <Typography variant="h4" color="#1A4D2E">
-                      {
-                        notifications.filter(
-                          (notification) => notification.tick === "a"
-                        ).length
-                      }
-                    </Typography>
-                    <Typography
-                      variant="h16"
-                      color="#1A4D2E"
-                      fontWeight={1000}
-                      gutterBottom
-                    >
-                      Total Approvals
-                    </Typography>
+                    <div style={{ flex: 1 }}>
+                      <Typography
+                        variant="h4"
+                        color="#1A4D2E"
+                        sx={{ textAlign: "center" }}
+                      >
+                        {
+                          notifications.filter(
+                            (notification) => notification.tick === "a"
+                          ).length
+                        }
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        color="#1A4D2E"
+                        fontWeight={500}
+                        fontSize={17}
+                        sx={{ textAlign: "center" }}
+                      >
+                        Total Approvals
+                      </Typography>
+                    </div>
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} sm={3}>
+
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Card
                   variant="outlined"
-                  sx={{ backgroundColor: "#FEFFD2", maxWidth: "270px" ,boxShadow: "0px 0px 10px rgba(240, 245, 0, 10)"}}
-                  style={{ borderRadius: "12px" }}
+                  sx={{
+                    backgroundColor: "white",
+                    maxWidth: "270px",
+                    border: "1px solid #eee",
+                    boxShadow:
+                      "rgba(145, 158, 171, 0.08) 0px 0px 2px 0px, rgba(145, 158, 171, 0.08) 0px 12px 24px -4px",
+                    borderRadius: "12px",
+                    padding: "10px",
+                    height: "110px",
+                    width: "270px",
+                  }}
                 >
                   <CardContent
                     sx={{
                       display: "flex",
-                      flexDirection: "column",
                       alignItems: "center",
                     }}
                   >
-                    <SpeakerNotesOffIcon
-                      style={{
-                        height: "60px",
-                        width: "60px",
-                        color: "#FEB941",
-                      }}
+                    <img
+                      src={ErrorIconPNG}
+                      height="50px"
+                      style={{ marginRight: "16px" }}
                     />
 
-                    <Typography variant="h4" color="#FEB941">
-                      {
-                        notifications.filter(
-                          (notification) => notification.tick === "r"
-                        ).length
-                      }
-                    </Typography>
-                    <Typography
-                      variant="h16"
-                      color="#FEB941"
-                      fontWeight={1000}
-                      gutterBottom
-                    >
-                      Total Rejections
-                    </Typography>
+                    <div style={{ flex: 1 }}>
+                      <Typography variant="h4" sx={{ textAlign: "center" }}>
+                        {
+                          notifications.filter(
+                            (notification) => notification.tick === "r"
+                          ).length
+                        }
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        fontWeight={500}
+                        fontSize={17}
+                        sx={{ textAlign: "center" }}
+                      >
+                        Total Rejections
+                      </Typography>
+                    </div>
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} sm={3}>
+
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <Card
                   variant="outlined"
-                  sx={{ backgroundColor: "#FFA27F", maxWidth: "270px" ,boxShadow: "0px 0px 10px rgba(255, 70, 0, 10)"}}
-                  style={{ borderRadius: "12px" }}
+                  sx={{
+                    backgroundColor: "white",
+                    maxWidth: "270px",
+                    border: "1px solid #eee",
+                    boxShadow:
+                      "rgba(145, 158, 171, 0.08) 0px 0px 2px 0px, rgba(145, 158, 171, 0.08) 0px 12px 24px -4px",
+                    borderRadius: "12px",
+                    padding: "10px",
+                    height: "110px",
+                    width: "270px",
+                  }}
                 >
                   <CardContent
                     sx={{
                       display: "flex",
-                      flexDirection: "column",
                       alignItems: "center",
                     }}
                   >
-                    <PendingActionsIcon
-                      style={{
-                        height: "60px",
-                        width: "60px",
-                        color: "#C40C0C",
-                      }}
+                    <img
+                      src={PendingPNG}
+                      height="60px"
+                      style={{ marginRight: "16px" }}
                     />
 
-                    <Typography variant="h4" color="#C40C0C">
-                      {
-                        notifications.filter(
-                          (notification) => notification.tick === "p"
-                        ).length
-                      }
-                    </Typography>
-                    <Typography
-                      variant="h16"
-                      color="#C40C0C"
-                      fontWeight={1000}
-                      gutterBottom
-                    >
-                      Pending Approval
-                    </Typography>
+                    <div style={{ flex: 1 }}>
+                      <Typography variant="h4" sx={{ textAlign: "center" }}>
+                        {
+                          notifications.filter(
+                            (notification) => notification.tick === "p"
+                          ).length
+                        }
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        fontSize={17}
+                        fontWeight={500}
+                        sx={{ textAlign: "center" }}
+                      >
+                        Pending Approval
+                      </Typography>
+                    </div>
                   </CardContent>
                 </Card>
               </Grid>
@@ -766,7 +832,7 @@ function SidebarMenu() {
         {selectedSection === "inbox" && (
           <div>
             <div>
-              <h2>Inbox</h2>
+              <h2 style={{marginTop:'40px'}}>Inbox</h2>
               <TableContainer component={Paper}>
                 <Table>
                   <TableHead>
@@ -835,7 +901,7 @@ function SidebarMenu() {
 
         {selectedSection === "add" && (
           <div>
-            <h2>User manager</h2>
+            <h2 style={{marginTop:'70px'}}>User manager</h2>
 
             <form>
               <TextField
@@ -891,6 +957,7 @@ function SidebarMenu() {
               </Button>
             </form>
             <br />
+            <Divider orientation="vertical" flexItem />
             <h2>Account Termination</h2>
             <div>
               <Button
