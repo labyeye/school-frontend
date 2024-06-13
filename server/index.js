@@ -8,7 +8,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 // Your Firebase configuration
-const serviceAccount = require('./school-ee33a-firebase-adminsdk-sa3e3-329ccc1738.json');
+const serviceAccount = require('./school-e36e9-firebase-adminsdk-4n6ch-87ae12efbc.json');
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
